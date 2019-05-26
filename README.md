@@ -1,5 +1,5 @@
 # takeone
-#### versión beta
+#### version:  beta
 
 ## User types
 #### Administrator
