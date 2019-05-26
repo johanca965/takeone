@@ -1,8 +1,8 @@
 # takeone
-### versión beta
+#### versión beta
 
 ## User types
-### Administrator
-### Federations
-### Clubs
-### Members
+#### Administrator
+#### Federations
+#### Clubs
+#### Members
