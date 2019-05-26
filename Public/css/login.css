@@ -1,0 +1,47 @@
+/* Extra small devices (portrait phones, less than 576px), No media query since this is the default in Bootstrap */
+
+/* styles for the left sidebar */
+.side-left, .side-right
+{
+	-ms-align-items: center;
+	align-items: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flex;
+	display: -o-flex;
+	display: flex;
+	justify-content: center;
+}
+
+.side-left
+{
+	background-image: url(../../img/background-login.png);
+	background-size: cover;
+	background-position: bottom;
+	height: 250px;
+}
+
+.recover-description
+{
+	line-height: 26px;
+}
+
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 999px) 
+{ 
+	.side-left, .side-right
+	{
+		height: 100vh;
+	}
+
+	.side-left
+	{ 
+		background-image: url(../../img/background-login.png);
+		background-size: cover;
+		background-position: center; 
+	}
+}

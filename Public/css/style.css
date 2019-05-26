@@ -1,0 +1,19 @@
+/* barra de navegación parte superior izquierda para abrir o ocultar el menu */
+.bar-toggle{  -ms-align-items: center; align-items: center; color: white !important; display: -webkit-flex; display: -moz-flex; display: -ms-flex; display: -o-flex; display: flex; float: left; justify-content: center; height: 50px; width: 50px; }
+.bar-toggle:hover, .bar-toggle:focus, .bar-toggle:active{ background-color: #d73925 !important; }
+
+.container-form{
+	background-color: white;
+	border-radius: 5px;
+	box-shadow: 3px 3px 3px #999;
+	padding: 2rem;
+}
+
+.container-form form{
+	padding: 1rem;
+}
+
+.pagination{ margin-bottom: 0px!important; text-align: center; width: 100%; }
+.pagination .link_pagination { -webkit-box-shadow: 1px 1px 1px #999; box-shadow: 1px 1px 1px #999; background-color: #fff; color: #000 !important; font-size: 12px !important; padding: 10px 15px; margin-right: 0 !important; }
+.pagination .link_pagination:hover{ background-color: #FB5541; color: #fff !important; }
+.link_pagination_active{ -webkit-box-shadow: 1px 1px 1px #999; box-shadow: 1px 1px 1px #999; background-color: #d73925; color: white; font-size: 12px !important; padding: 10px 15px; margin-right: 0 !important; }

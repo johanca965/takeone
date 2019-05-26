@@ -1,0 +1,13 @@
+url server: https://140.82.32.33:8443
+url subdmain: http://adminlte.takeone.tech/
+username: JohanCastro
+password: Ww?vc680
+
+#dashboard for the domains
+url server: https://my.vultr.com/dns/edit/?domain=takeone.tech#dns-records
+username: platformtakeone@gmail.com
+password:  $aSh198301
+
+#user to access database
+username: teamtakeone
+password: &ldDt402

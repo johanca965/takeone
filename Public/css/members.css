@@ -1,0 +1,63 @@
+/* contenedor de las listas de la vista principal */
+.list-content-welcome{ height: 350px; overflow-y: auto; }
+
+/* contenedor lista vacia de la vista principal */
+.empty-list-content-welcome{ -ms-align-items: center; align-items: center; display: -webkit-flex; display: -moz-flex; display: -ms-flex; display: -o-flex; display: flex; height: 100%; width: 100%; justify-content: center; }
+
+/* item de la lista de la vista princial*/
+.item-list-content-welcome{ border-bottom: 1px solid #efefef; color: #666; display: block; padding: 1rem; }
+.item-list-content-welcome:hover, .item-list-content-welcome:active, .item-list-content-welcome:focus{ background-color: #FFEEEE; color: #000; }
+.item-list-content-welcome .item-image{ border-radius: 50%; height: 50px; margin-right: 10px; width: 50px; }
+.item-list-content-welcome h3{ margin: 0 !important; }
+
+/* diseño de las cards para los clubs de la vista find */
+.card{ background-color: #fff; border-radius: 5px; box-shadow: 3px 3px 3px #ddd; display: block; margin-bottom: 25px; position: relative; width: 100%; }
+.card .card-header{ -ms-align-items: center; align-items: center; border: 1px solid rgba(0, 0, 0, .2); border-radius: 5px 5px 0 0; display: -webkit-flex; display: -moz-flex; display: -ms-flex; display: -o-flex; display: flex; height: 200px; justify-content: center; overflow-y: hidden; position: relative; width: 100%; }
+.card .card-header img{ border-radius: 5px 5px 0 0; height: auto; width: 100%; }
+.card .card-body{ color: #000 !important; padding: 1rem; }
+.card .card-body .links{ display: -webkit-flex; display: -moz-flex; display: -ms-flex; display: -o-flex; display: flex; }
+.card .card-body .btn{ margin: 10px 5px; width: 50%; }
+.card .card-body .btn.w-200{ width: 200px; }
+.card .card-body .btn.btn-outline-danger{ border-color: #d73925; color: #d73925; }
+.card .card-body .btn.btn-outline-danger:hover, .card .card-body .btn.btn-outline-danger:focus, .card .card-body .btn.btn-outline-danger:active{ background-color: #d73925; color: white; }
+.card .card-body .btn.btn-outline-grey{ border-color: #666; color: #666; cursor: initial; }
+.card .card-body .mt-4{ margin-top: 4rem; }
+
+/* diseño para los datos del club de la vista information */
+.container-club-images{ -ms-align-items: center; align-items: center; display: -webkit-flex; display: -moz-flex; display: -ms-flex; display: -o-flex; display: flex; justify-content: center; position: relative; }
+.container-club-images img{ border: 1px solid #eee; height: 250px; margin: 0px 10px; width: 250px; }
+
+.box-body{ overflow: hidden; }
+.content-notifications{ padding: 0 7px; margin-left: -20px; width: 105%; }
+.content-notifications .col-xs-12{ border-top: 1px solid #eee; overflow-y: auto; overflow-x: hidden; max-height: 350px; padding: 0 !important }
+.content-notifications .col-xs-12:nth-child(1) ul{ padding: 0 !important;  }
+.content-notifications .col-xs-12:nth-child(1) ul li{ list-style: none; display: -webkit-flex; display: -moz-flex; display: -ms-flex; display: -o-flex; display: flex; }
+.content-notifications .col-xs-12:nth-child(1) ul li a{ background-color: #f7f7f7 !important; border-bottom: 1px solid #eee; display: block; padding: 10px; width: 110%; }
+.content-notifications .col-xs-12:nth-child(1) ul li:last-child a{ border-bottom: none; }
+.content-notifications .col-xs-12:nth-child(1) ul li a:hover{ background-color: #ddd; }
+.content-notifications .col-xs-12:nth-child(1) ul li a img, .content-notifications .col-xs-12:nth-child(2) div img{ height: 70px; margin-right: 10px; }
+.content-notifications .col-xs-12:nth-child(1) ul li a p{ color: #666; max-height: 35px; overflow-y: hidden; }
+.content-notifications .col-xs-12:nth-child(1) ul li a small{ float: right; }
+.content-notifications .col-xs-12:nth-child(2){ padding: 15px !important; }
+.content-notifications .col-xs-12:nth-child(2) div{ -ms-align-items: center;
+align-items: center; display: -webkit-flex; display: -moz-flex; display: -ms-flex; display: -o-flex; display: flex; }
+.content-notifications .col-xs-12:nth-child(2) small{ display: block; margin-top: 10px; }
+.content-notifications .col-xs-12:nth-child(2) p{ line-height: 32px; margin-top: 20px; padding: 0 10px; text-align: justify; }
+table{ width: 100%; }
+table tr{ padding: 10px; }
+.text-grey{ color: #999; }
+
+
+.modal-geolocation{ -ms-align-items: center; align-items: center; background-color: rgba(0, 0, 0, .8); display: none; height: 100vh; justify-content: center; position: fixed; width: 100%; z-index: 999999; top: 0; left: 0; transition-duration: .3s; }
+.modal-geolocation .body-geolocation{ color: white; height: auto; max-height: 400px; max-width: 500px; width: 100%; }
+.modal-geolocation .body-geolocation .btn-rounded{ -ms-align-items: center; align-items: center; background-color: rgba(0, 0, 0, .3); border-radius: 50%; display: -webkit-flex; display: -moz-flex; display: -ms-flex; display: -o-flex; display: flex; justify-content: center; font-size: 18px; height: 50px; transform: rotate(45deg); width: 50px; }
+
+@media( min-width: 768px)
+{
+	.content-notifications{ align-items: stretch !important; display: -webkit-flex; display: -moz-flex; display: -ms-flex; display: -o-flex; display: flex; padding-right: 25px; }
+	.content-notifications .col-xs-12{ border-top: none; max-height: 500px; }
+	.content-notifications .col-xs-12:nth-child(1) ul li a{ border-top: 1px solid #eee;  }
+	.content-notifications .col-xs-12:nth-child(1) ul li:first-child a{ border-top: none; }
+	.content-notifications .col-xs-12:nth-child(2){ border-left: 1px solid #eee; }
+
+}
