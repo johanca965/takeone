@@ -17,6 +17,8 @@ class SuscriptionController extends Controller
 		$this->memberModel = $this->model('Member');
 		// importamos el modelo correspondiente
 		$this->clubnotificationModel = $this->model('Clubnotification');
+		// importamos el modelo correspondiente
+		$this->memberpackageModel = $this->model('Memberpackage');
 
 	}
 
@@ -133,6 +135,8 @@ class SuscriptionController extends Controller
 				// creamos un array que contiene los datos a guardar
 				$request = [
 					'id' => $_POST['id'],
+					'price' => $_POST['total_suscription'],
+					'total_discount' => $_POST['total_discount'],
 					'state' => "paid",
 					'update_at' => date('Y-m-d H:i:s'),
 				];
@@ -262,6 +266,99 @@ class SuscriptionController extends Controller
 			// evitamos que siga la función
 			return;
 		}
+	}
+
+	public function findPackagesMembers()
+	{
+		// validar método post
+		$this->methodPost();
+		// validación de campos
+		$errors = $this->validate( $_POST, [
+			'member_id' => 'required'
+		]);
+		// validamos si existe un error
+		if( $errors )
+		{
+			// mostramos el error
+			echo $this->errors();
+			// evitamos que siga la función
+			return;
+		}
+		// buscamos los datos del paquete
+		$packages = $this->memberpackageModel->findByMemberID( $_POST['member_id'] );
+		// variable que contiene el lsitado a devolver
+		$rows = '
+			<div class="form-group">
+				<label>List of packages to make discount:</label>
+			</div>
+		';
+		foreach ($packages as $package) 
+		{
+			$rows .= '
+				<div class="form-group" style="margin-top: 15px;">
+					<label for="discount_'.$package['title'].'">'.ucwords( $package['title'] ).': '.$package['price'].' '.$_POST['currency'].'</label>
+					<input type="number" class="form-control suscription_discount" id="discount_'.$package['title'].'" placeholder="min. 0 - max. '.$package['discount'].' '.$_POST['currency'].'" value="0" max="'.$package['discount'].'" min="0">
+					<input type="hidden" class="form-control suscription_price" value="'.$package['price'].'">
+				</div>
+			';
+		}
+
+		$rows .= '
+			<div class="form-group" style="text-align: left">
+				<label>Total: <font class="total_suscription">'.$_POST['total'].'</font> '.$_POST['currency'].'</label>
+				<input type="hidden" class="form-control" id="total_suscription" name="total_suscription" value="'.$_POST['total'].'">
+				<input type="hidden" class="form-control" id="total_discount" name="total_discount" value="">
+				<input type="hidden" class="form-control" id="original_total" value="'.$_POST['total'].'">
+			</div>
+			<script>
+				$(".suscription_discount").change(function(){
+					// variable que contiene el valor a descontar del total
+					var total_discount = 0;
+					$("#list-package .form-group").each(function(){
+		        	    // obtenemos el valor del descuento
+						var discount = $(this).children(".suscription_discount").val();
+						if( discount != undefined )
+						{
+							// obtenemos el valor máximo del descuento
+							var max = $(this).children(".suscription_discount").attr("max");
+							// validamos si el descuento a aplicar es mayor al máximo
+							if( parseFloat(discount) > parseFloat(max)  )
+							{
+								// mostramos el valor del descuento como el máximo
+								$(this).children(".suscription_discount").val( max );
+								// cambiamos el valor del descuento por el máximo
+								discount = max;
+							}
+							// obtenemos el valor del paquete
+							var price = $(this).children(".suscription_price").val();
+							// validamos si el descuento es mayor al precio
+							if( parseFloat(discount) > parseFloat(price)  )
+							{
+								// mostramos el valor del descuento como el máximo
+								$(this).children(".suscription_discount").val( price );
+								// cambiamos el valor del descuento por el máximo
+								discount = price;
+							}
+							// obtenemos el descuento a restar del paquete
+							total_discount = parseFloat(total_discount) + parseFloat(discount);
+						}
+		        	});
+					// obtenemos el total original de la suscripcion
+					var total = $("#original_total").val();
+					// realizamos el calculo con el descuento
+					total = total - total_discount;
+					// asiganamos el valor del descuento a la variable visible del usuario del total
+					$(".total_suscription").html(total);
+					// asignamos el valor total del descuento al campo de cambios
+					$("#total_suscription").val(total);
+					// asignamos el valor del descuento al campo de cambios
+					$("#total_discount").val(total_discount);
+				}); 
+			</script>
+		';
+
+		echo "true|".$rows;
+
 	}
 
 	// función para eliminar la notificación de la suscripción

@@ -12,7 +12,7 @@ class Suscription extends Model
 		$this->table = "suscriptions";
 		// llenamos la variable que contiene los datos que se pueden registrar en masa 
 		$this->fillable = [ 
-			"club_id", "member_id", "price", "payment_method", "state", "created_at", "updated_at"
+			"club_id", "member_id", "price", "total_discount", "payment_method", "state", "created_at", "updated_at"
 		];
 		// variable que contiene los campos que no queremos dejar ver
 		$this->hidden = [ "" ];
@@ -76,13 +76,13 @@ class Suscription extends Model
 	public function findApprovalByClubID( $club_id )
 	{
 		// ejecutamos la consulta
-		return parent::simple( ' SELECT t1.id, t1.price, t1.created_at, t3.name, t3.photo FROM ' . $this->table . ' t1 INNER JOIN members t2 ON t1.member_id = t2.id INNER JOIN users t3 ON t2.user_id = t3.id WHERE t1.club_id = "'.$club_id.'" and t1.state = "approval" ' );
+		return parent::simple( ' SELECT t1.id, t1.member_id, t1.price, t1.created_at, t3.name, t3.photo FROM ' . $this->table . ' t1 INNER JOIN members t2 ON t1.member_id = t2.id INNER JOIN users t3 ON t2.user_id = t3.id WHERE t1.club_id = "'.$club_id.'" and t1.state = "approval" ' );
 	}
 
 	public function findExpiredByClubID( $club_id )
 	{
 		// ejecutamos la consulta
-		return parent::simple( ' SELECT t1.id, t1.price, t1.created_at, t3.name, t3.photo FROM ' . $this->table . ' t1 INNER JOIN members t2 ON t1.member_id = t2.id INNER JOIN users t3 ON t2.user_id = t3.id WHERE t1.club_id = "'.$club_id.'" and t1.state = "expired" ' );
+		return parent::simple( ' SELECT t1.id, t1.member_id, t1.price, t1.created_at, t3.name, t3.photo FROM ' . $this->table . ' t1 INNER JOIN members t2 ON t1.member_id = t2.id INNER JOIN users t3 ON t2.user_id = t3.id WHERE t1.club_id = "'.$club_id.'" and t1.state = "expired" ' );
 	}
 
 	public function countOfMonthWithCludID( $club_id )

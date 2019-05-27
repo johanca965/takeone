@@ -20,24 +20,20 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 					{
 						echo "
 						<li>
-							<img src='".RUTA_IMG."/users/".$suscriptions_approval['photo']."' style='width: 100px; height: 100px;' alt='".ucwords($suscriptions_approval['name'])." Image'>
-							<span class='users-list-name'>".ucwords($suscriptions_approval['name'])."</span>
-							<span class='users-list-name'>".$suscriptions_approval['price']." ".$params['club']['currency']."</span>
-							<span class='users-list-name'>".$this->convertDate( $suscriptions_approval['created_at'] )."</span>
-							<a href='#' data-toggle='modal' data-target='#modalConfirmPayment' class='open-confirm-payment ml-auto btn btn-success btn-sm' data-id='".$suscriptions_approval['id']."' title='Pay' style='margin-top: 5px;'>
-								<i class='fas fa-credit-card'></i>
-							</a>
-							<form id='form-payment-".$suscriptions_approval['id']."' action='".RUTA_URL."/Clubs/Suscription/payment' method='POST' style='display: none;'>
-								".$this->csrfToken()."
-								<input type='hidden' name='id' value='".$suscriptions_approval['id']."'>
-							</form>
-							<a href='#' data-toggle='modal' data-target='#modalConfirmCancel' class='open-confirm-cancel ml-auto btn btn-danger btn-sm' data-id='".$suscriptions_approval['id']."' style='margin-top: 5px;' title='Cancel'>
-								<i class='fas fa-times'></i>
-							</a>
-							<form id='form-cancel-".$suscriptions_approval['id']."' action='".RUTA_URL."/Clubs/Suscription/cancel' method='POST' style='display: none;'>
-								".$this->csrfToken()."
-								<input type='hidden' name='id' value='".$suscriptions_approval['id']."'>
-							</form>
+						<img src='".RUTA_IMG."/users/".$suscriptions_approval['photo']."' style='width: 100px; height: 100px;' alt='".ucwords($suscriptions_approval['name'])." Image'>
+						<span class='users-list-name'>".ucwords($suscriptions_approval['name'])."</span>
+						<span class='users-list-name'>".$suscriptions_approval['price']." ".$params['club']['currency']."</span>
+						<span class='users-list-name'>".$this->convertDate( $suscriptions_approval['created_at'] )."</span>
+						<a href='#' data-toggle='modal' data-target='#modalConfirmPayment' class='open-confirm-payment ml-auto btn btn-success btn-sm' data-id='".$suscriptions_approval['id']."' title='Pay' style='margin-top: 5px;' data-url='".RUTA_URL."/Clubs/Suscription/findPackagesMembers' data-member-id='".$suscriptions_approval["member_id"]."' data-total='".$suscriptions_approval['price']."' data-currency='".$params['club']['currency']."'>
+						<i class='fas fa-credit-card'></i>
+						</a>
+						<a href='#' data-toggle='modal' data-target='#modalConfirmCancel' class='open-confirm-cancel ml-auto btn btn-danger btn-sm' data-id='".$suscriptions_approval['id']."' style='margin-top: 5px;' title='Cancel'>
+						<i class='fas fa-times'></i>
+						</a>
+						<form id='form-cancel-".$suscriptions_approval['id']."' action='".RUTA_URL."/Clubs/Suscription/cancel' method='POST' style='display: none;'>
+						".$this->csrfToken()."
+						<input type='hidden' name='id' value='".$suscriptions_approval['id']."'>
+						</form>
 						</li>
 						";
 					}
@@ -61,25 +57,21 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 					{
 						echo "
 						<li>
-							<img src='".RUTA_IMG."/users/".$suscriptions_expired['photo']."' style='width: 100px; height: 100px;' alt='".ucwords($suscriptions_expired['name'])." Image'>
-							<span class='users-list-date'>".ucwords($suscriptions_expired['name'])."</span>
-							<span class='users-list-date'>".$suscriptions_expired['price']." ".$params['club']['currency']."</span>
-							<span class='users-list-date'>".$this->convertDate( $suscriptions_expired['created_at'] )."</span>
-							<a href='#' data-toggle='modal' data-target='#modalConfirmPayment' class='open-confirm-payment ml-auto btn btn-success btn-sm' data-id='".$suscriptions_expired['id']."' title='Pay' style='margin-top: 5px;'>
-								<i class='fas fa-credit-card'></i>
-							</a>
-							<form id='form-payment-".$suscriptions_expired['id']."' action='".RUTA_URL."/Clubs/Suscription/payment' method='POST' style='display: none;'>
-								".$this->csrfToken()."
-								<input type='hidden' name='id' value='".$suscriptions_expired['id']."'>
-							</form>
-							<a href='#' data-toggle='modal' data-target='#modalConfirmCancel' class='open-confirm-cancel ml-auto btn btn-danger btn-sm' data-id='".$suscriptions_expired['id']."' style='margin-top: 5px;' title='Cancel'>
-								<i class='fas fa-times'></i>
-							</a>
-							<form id='form-cancel-".$suscriptions_expired['id']."' action='".RUTA_URL."/Clubs/Suscription/cancel' method='POST' style='display: none;'>
-								".$this->csrfToken()."
-								<input type='hidden' name='id' value='".$suscriptions_expired['id']."'>
-							</form>
-							</span>
+						<img src='".RUTA_IMG."/users/".$suscriptions_expired['photo']."' style='width: 100px; height: 100px;' alt='".ucwords($suscriptions_expired['name'])." Image'>
+						<span class='users-list-date'>".ucwords($suscriptions_expired['name'])."</span>
+						<span class='users-list-date'>".$suscriptions_expired['price']." ".$params['club']['currency']."</span>
+						<span class='users-list-date'>".$this->convertDate( $suscriptions_expired['created_at'] )."</span>
+						<a href='#' data-toggle='modal' data-target='#modalConfirmPayment' class='open-confirm-payment ml-auto btn btn-success btn-sm' data-id='".$suscriptions_expired['id']."' title='Pay' style='margin-top: 5px;' data-url='".RUTA_URL."/Clubs/Suscription/findPackagesMembers' data-member-id='".$suscriptions_expired["member_id"]."' data-total='".$suscriptions_expired['price']."' data-currency='".$params['club']['currency']."'>
+						<i class='fas fa-credit-card'></i>
+						</a>
+						<a href='#' data-toggle='modal' data-target='#modalConfirmCancel' class='open-confirm-cancel ml-auto btn btn-danger btn-sm' data-id='".$suscriptions_expired['id']."' style='margin-top: 5px;' title='Cancel'>
+						<i class='fas fa-times'></i>
+						</a>
+						<form id='form-cancel-".$suscriptions_expired['id']."' action='".RUTA_URL."/Clubs/Suscription/cancel' method='POST' style='display: none;'>
+						".$this->csrfToken()."
+						<input type='hidden' name='id' value='".$suscriptions_expired['id']."'>
+						</form>
+						</span>
 						</li>
 						";
 					}
@@ -95,23 +87,27 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 	<div class="modal-dialog modal-dialog-centered modal-sm modal-notify" role="document">
 		<!--Content-->
 		<div class="modal-content text-center">
-			<!--Header-->
-			<div class="modal-header bg-danger d-flex justify-content-center">
-				<p class="heading">Are you sure the suscription was paid?</p>
-			</div>
+			<form id="form-create" method="post" action="<?php echo RUTA_URL; ?>/Clubs/Suscription/payment" autcomplete="off">
+				<?php echo $this->csrfToken(); ?>
+				<!--Header-->
+				<div class="modal-header bg-danger d-flex justify-content-center">
+					<p class="heading">Are you sure the suscription was paid?</p>
+				</div>
 
-			<!--Body-->
-			<div class="modal-body">
-				<i class="fa fa-credit-card fa-4x animated rotateIn"></i>
-				<div id="errors-payment" style="margin-top: 15px;"></div>
-			</div>
+				<!--Body-->
+				<div class="modal-body">
+					<i class="fa fa-credit-card fa-4x animated rotateIn"></i>
+					<div id="list-package" style="margin-top: 15px;"></div>
+					<div id="errors-payment" style="margin-top: 15px;"></div>
+				</div>
 
-			<!--Footer-->
-			<div class="modal-footer flex-center">
-				<input type="hidden" id="id-form-payment" name="id-form-payment">
-				<a id="btn-form-payment" class="form-payment btn btn-primary">Yes</a>
-				<a type="button" class="btn  btn-danger waves-effect" data-dismiss="modal">No</a>
-			</div>
+				<!--Footer-->
+				<div class="modal-footer flex-center">
+					<input type="hidden" id="id-form-payment" name="id">
+					<button type="submit" id="btn-form-payment" class="form-payment btn btn-primary">Yes</button>
+					<a type="button" class="btn  btn-danger waves-effect" data-dismiss="modal">No</a>
+				</div>
+			</form>
 		</div>
 		<!--/.Content-->
 	</div>

@@ -144,11 +144,12 @@ class MemberController extends Controller
 		{
 			// borramos la notificacions
 			$this->clubnotificationModel->deleteSectionID( "member", $_POST['member_id'] );
-			// validamos si fue rechazado
+			/*// validamos si fue rechazado
 			if( $_POST['accepted'] == 3 )
 			{
+				// buscamos los datos de la suscripción
 				$suscription = $this->suscriptionModel->findByMemberID( $_POST['member_id'] );
-			}
+			}*/
 			// creamos un array que contiene los datos a registrar
 			$request = [
 				'user_id' => $this->Auth()->user()->id(),
@@ -289,7 +290,7 @@ class MemberController extends Controller
 				'club_id' => $_POST['club_id'],
 				'importance' => '1',
 				'section' => 'member',
-				'section_id' => $member['id'],
+				'section_id' => $member['member_id'],
 				'created_at' => date('Y-m-d H:i:s'),
 				'updated_at' => date('Y-m-d H:i:s')
 			];
@@ -301,7 +302,7 @@ class MemberController extends Controller
 			{
 				// creamos el request con los datos necesarios
 				$request = [
-					'member_id' => $member['id'],
+					'member_id' => $member['member_id'],
 					'package_id' => $package,
 					'created_at' => date('Y-m-d H:i:s'),
 					'updated_at' => date('Y-m-d H:i:s')
@@ -321,7 +322,7 @@ class MemberController extends Controller
 			$time = date('Y-m-d H:i:s');
 			$request = [
 				'club_id' => $_POST['club_id'],
-				'member_id' => $member['id'],
+				'member_id' => $member['member_id'],
 				'price' => $total_first_suscription,
 				'payment_method' => 'cash',
 				'state' => 'approval',
@@ -331,7 +332,7 @@ class MemberController extends Controller
 			// guardamos la suscripción
 			$this->suscriptionModel->store( $request );
 			// buscamos los datos de la suscripción
-			$suscription = mysqli_fetch_assoc( $this->suscriptionModel->findByClubUserIDDate( $_POST['club_id'], $member['id'], $time ) );
+			$suscription = mysqli_fetch_assoc( $this->suscriptionModel->findByClubUserIDDate( $_POST['club_id'], $member['member_id'], $time ) );
 			// creamos la notificación de nuevo miembro
 			$request = [
 				'club_id' => $_POST['club_id'],

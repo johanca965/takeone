@@ -78,7 +78,7 @@ class Clubschedule extends Model
 	public function allMembersWithClubAndDay( $club_id, $day )
 	{
 		// ejecutamos la consulta
-		return parent::simple( ' SELECT count(*) as cant FROM ' . $this->table . ' t1 INNER JOIN club_packages t2 ON t1.package_id = t2.id INNER JOIN member_packages t3 ON t3.package_id = t1.package_id WHERE t1.club_id = "'.$club_id.'" and t1.days LIKE "%'.$day.'%" GROUP BY t1.package_id ' );
+		return parent::simple( ' SELECT count(*) as cant FROM ' . $this->table . ' t1 INNER JOIN club_packages t2 ON t1.package_id = t2.id INNER JOIN member_packages t3 ON t3.package_id = t1.package_id INNER JOIN members t4 ON t4.id = t3.member_id WHERE t1.club_id = "'.$club_id.'" and t1.days LIKE "%'.$day.'%" and t4.accepted = "2" and t4.active = "2" GROUP BY t1.package_id ' );
 	}
 
 }

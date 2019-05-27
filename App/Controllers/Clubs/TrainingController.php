@@ -111,7 +111,7 @@ class TrainingController extends Controller
 				else
 				{
 					// retornamos un valor vacio
-					return ['message' => 'Not found results.'];
+					return ['message' => 'Members are not expected for the selected day and package.'];
 				}
 			}
 		}

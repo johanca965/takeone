@@ -94,7 +94,7 @@ class MemberController extends Controller
 					'club_id' => $_POST['club_id'],
 					'importance' => '1',
 					'section' => 'member',
-					'section_id' => $member['id'],
+					'section_id' => $member['member_id'],
 					'created_at' => date('Y-m-d H:i:s'),
 					'updated_at' => date('Y-m-d H:i:s')
 				];
@@ -106,7 +106,7 @@ class MemberController extends Controller
 				{
 					// creamos el request con los datos necesarios
 					$request = [
-						'member_id' => $member['id'],
+						'member_id' => $member['member_id'],
 						'package_id' => $package,
 						'created_at' => date('Y-m-d H:i:s'),
 						'updated_at' => date('Y-m-d H:i:s')
@@ -126,7 +126,7 @@ class MemberController extends Controller
 				$time = date('Y-m-d H:i:s');
 				$request = [
 					'club_id' => $_POST['club_id'],
-					'member_id' => $member['id'],
+					'member_id' => $member['member_id'],
 					'price' => $total_first_suscription,
 					'payment_method' => 'cash',
 					'state' => 'approval',
@@ -136,7 +136,7 @@ class MemberController extends Controller
 				// guardamos la suscripción
 				$this->suscriptionModel->store( $request );
 				// buscamos los datos de la suscripción
-				$suscription = mysqli_fetch_assoc( $this->suscriptionModel->findByClubUserIDDate( $_POST['club_id'], $member['id'], $time ) );
+				$suscription = mysqli_fetch_assoc( $this->suscriptionModel->findByClubUserIDDate( $_POST['club_id'], $member['member_id'], $time ) );
 				// creamos la notificación de nuevo miembro
 				$request = [
 					'club_id' => $_POST['club_id'],
@@ -153,7 +153,7 @@ class MemberController extends Controller
 					'user_id' => $this->Auth()->user()->id(),
 					'tabla' => 'Members',
 					'action' => 'Request join ',
-					'code' => $member['id'],
+					'code' => $member['member_id'],
 					'description' => 'New club member.',
 					'created_at' => date('Y-m-d H:i:s')
 				];
@@ -196,7 +196,7 @@ class MemberController extends Controller
 			// obtenemos los datos del miembr
 			$member = mysqli_fetch_assoc( $search );
 			// ejecutamos la petición de seguimiento
-			$result = $this->memberModel->delete( $member['id'] );
+			$result = $this->memberModel->delete( $member['member_id'] );
 			print_r($result); exit();
 			// validamos si existe error
 			if( !$result )
@@ -213,7 +213,7 @@ class MemberController extends Controller
 					'user_id' => $this->Auth()->user()->id(),
 					'tabla' => 'Members',
 					'action' => 'Request canceled',
-					'code' => $member['id'],
+					'code' => $member['member_id'],
 					'description' => 'Request canceled by the user.',
 					'created_at' => date('Y-m-d H:i:s')
 				];
