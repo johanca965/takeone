@@ -282,17 +282,43 @@
                             </a>
                         </li>   
                     <?php } elseif( $this->Auth()->user()->role() == 2 ){ ?> 
-                        <li class="header">Generals</li>
+                        <li class="header">My Club</li>
                         <li class="<?php echo $this->validateUrl( 'Clubs/Welcome' ); ?>">
                             <a href="<?php echo RUTA_URL; ?>/Clubs/Welcome">
-                                <i class="fa fa-home"></i>
-                                <span>Home</span>
+                                <i class="fas fa-chart-line" style="margin-right: 6px;"></i>
+                                <span>Statistics</span>
                             </a>
                         </li>
+                        <li class="<?php echo $this->validateUrl( 'Clubs/Schedule' ); ?>">
+                            <a href="<?php echo RUTA_URL; ?>/Clubs/Schedule">
+                                <i class="fa fa-clock"></i>
+                                <span>Schedule</span>
+                            </a>
+                        </li> 
+                        <li class="<?php echo $this->validateUrl( 'Clubs/Trainner' ); ?>">
+                            <a href="<?php echo RUTA_URL; ?>/Clubs/Trainner">
+                                <i class="fa fa-user-tie"></i> 
+                                <span>Trainners</span>
+                            </a>
+                        </li>
+                        <li class="<?php echo $this->validateUrl( 'Clubs/Notification' ); ?>">
+                            <a href="<?php echo RUTA_URL; ?>/Clubs/Notification">
+                                <i class="fa fa-bell"></i> 
+                                <span>Notifications</span>
+                            </a>
+                        </li>
+                        <li class="<?php echo $this->validateUrl( 'Clubs/Information' ); ?>">
+                            <a href="<?php echo RUTA_URL; ?>/Clubs/Information">
+                                <i class="fa fa-cog"></i> 
+                                <span>Settings</span>
+                            </a>
+                        </li>
+
+                        <li class="header">My Members</li>
                         <li class="<?php echo $this->validateUrl( 'Clubs/Member' ); ?>">
                             <a href="<?php echo RUTA_URL; ?>/Clubs/Member">
                                 <i class="fa fa-users"></i>
-                                <span>Members</span>
+                                <span>Manage</span>
                             </a>
                         </li>
                         <li class="<?php echo $this->validateUrl( 'Clubs/Training' ); ?>">
@@ -300,54 +326,31 @@
                                 <i class="fa fa-dumbbell"></i>
                                 <span>Attendence</span>
                             </a>
-                        </li> 
-                        <li class="<?php echo $this->validateUrl( 'Clubs/Schedule' ); ?>">
-                            <a href="<?php echo RUTA_URL; ?>/Clubs/Schedule">
-                                <i class="fa fa-clock"></i>
-                                <span>Schedule</span>
+                        </li>  
+                        <li class="<?php echo $this->validateUrl( 'Clubs/Suscription' ); ?>">
+                            <a href="<?php echo RUTA_URL; ?>/Clubs/Suscription">
+                                <i class="fa fa-gem"></i> 
+                                <span>Suscriptions</span>
                             </a>
-                        </li> 
-                        <li class="<?php echo $this->validateUrl( 'Clubs/Notification' ); ?>">
-                            <a href="<?php echo RUTA_URL; ?>/Clubs/Notification">
-                                <i class="fa fa-bell"></i> 
-                                <span>Notifications</span>
-                            </a>
-                        </li> 
+                        </li>
                         <!-- <li>
                             <a href="#">
                                 <i class="fa fa-pen-alt"></i> 
                                 <span>Publications</span>
                             </a>
                         </li> -->
-                        <li class="<?php echo $this->validateUrl( 'Clubs/Information' ); ?>">
-                            <a href="<?php echo RUTA_URL; ?>/Clubs/Information">
-                                <i class="fa fa-vihara"></i> 
-                                <span>Club information</span>
-                            </a>
-                        </li>
-                        <li class="<?php echo $this->validateUrl( 'Clubs/Trainner' ); ?>">
-                            <a href="<?php echo RUTA_URL; ?>/Clubs/Trainner">
-                                <i class="fa fa-user-tie"></i> 
-                                <span>Trainners</span>
-                            </a>
-                        </li>
-                        <li class="header">Sales</li>
-                        <li class="<?php echo $this->validateUrl( 'Clubs/Stock' ); ?>">
-                            <a href="<?php echo RUTA_URL; ?>/Clubs/Stock">
-                                <i class="fa fa-box"></i> 
-                                <span>Products</span>
-                            </a>
-                        </li>
+
+                        <li class="header">My Shop</li>
                         <li class="<?php echo $this->validateUrl( 'Clubs/Sale' ); ?>">
                             <a href="<?php echo RUTA_URL; ?>/Clubs/Sale">
                                 <i class="fa fa-shopping-cart"></i> 
                                 <span>Sales</span>
                             </a>
                         </li>
-                        <li class="<?php echo $this->validateUrl( 'Clubs/Suscription' ); ?>">
-                            <a href="<?php echo RUTA_URL; ?>/Clubs/Suscription">
-                                <i class="fa fa-gem"></i> 
-                                <span>Suscriptions</span>
+                        <li class="<?php echo $this->validateUrl( 'Clubs/Stock' ); ?>">
+                            <a href="<?php echo RUTA_URL; ?>/Clubs/Stock">
+                                <i class="fa fa-box"></i> 
+                                <span>Products</span>
                             </a>
                         </li>
                         <!-- <li class="header">Championships</li>

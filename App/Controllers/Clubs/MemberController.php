@@ -39,7 +39,7 @@ class MemberController extends Controller
 			'members_blocked' => $this->memberModel->listingByClubBlocked( $club['id'] ),
 			'members_new' => $this->memberModel->listingByClubNew( $club['id'] ),
 			'members_delete' => $this->memberModel->listingByClubDelete( $club['id'] ),
-			'breadcrumb_data' => '<li class="active">Members</li>'
+			'breadcrumb_data' => '<li class="active">Manage</li>'
 		];
 		// redireccionamos al listado de clubs
 		$this->view('Clubs/Members/index', $params);

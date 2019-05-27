@@ -33,7 +33,7 @@ class WelcomeController extends Controller
 			'cant_suscriptions' => mysqli_fetch_assoc( $this->suscriptionModel->suscriptionWithClub( $result['id'] ) ),
 			'cant_attendence' => mysqli_fetch_assoc( $this->trainingModel->trainingWithClub( $result['id'], date('Y-m-d') ) ),
 			'all_members' => mysqli_fetch_assoc( $this->clubscheduleModel->allMembersWithClubAndDay( $result['id'], date('l') ) ),
-			'breadcrumb_data' => '<li class="active">Home</li>'
+			'breadcrumb_data' => '<li class="active">Statistics</li>'
 		];
 		if( empty($params['all_members']['cant']) )
 			$params['all_members']['cant'] = 0;

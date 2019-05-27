@@ -24,7 +24,7 @@ class InformationController extends Controller
 		$params = [
 			'club' => $result,
 			'countries' => $this->countryModel->listSimple(),
-			'breadcrumb_data' => '<li class="active">Club information</li>'
+			'breadcrumb_data' => '<li class="active">Settings</li>'
 		];
 		$this->view('Clubs/information', $params);
 	}
