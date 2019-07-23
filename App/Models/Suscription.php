@@ -12,7 +12,7 @@ class Suscription extends Model
 		$this->table = "suscriptions";
 		// llenamos la variable que contiene los datos que se pueden registrar en masa 
 		$this->fillable = [ 
-			"club_id", "member_id", "price", "total_discount", "payment_method", "state", "created_at", "updated_at"
+			"club_id", "member_id", "price", "total_discount", "payment_method", "state", "observation", "created_at", "updated_at"
 		];
 		// variable que contiene los campos que no queremos dejar ver
 		$this->hidden = [ "" ];

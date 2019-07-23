@@ -196,6 +196,7 @@ class SuscriptionController extends Controller
 		// validación de campos
 		$errors = $this->validate( $_POST, [
 			'id' => 'required',
+			'id' => 'Observation',
 		]);
 		// validamos si existe un error
 		if( $errors )
@@ -217,6 +218,7 @@ class SuscriptionController extends Controller
 				$request = [
 					'id' => $_POST['id'],
 					'state' => "canceled",
+					'observation' => $_POST['observation'],
 					'update_at' => date('Y-m-d H:i:s'),
 				];
 				// realizamos la petición

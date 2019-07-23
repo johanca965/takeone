@@ -33,6 +33,7 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 							<form id='form-cancel-".$suscriptions_approval['id']."' action='".RUTA_URL."/Clubs/Suscription/cancel' method='POST' style='display: none;'>
 							".$this->csrfToken()."
 								<input type='hidden' name='id' value='".$suscriptions_approval['id']."'>
+								<textarea rows='5' class='d-none observation_hidden' name='observation'></textarea>
 							</form>
 						</li>
 						";
@@ -70,6 +71,7 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 							<form id='form-cancel-".$suscriptions_expired['id']."' action='".RUTA_URL."/Clubs/Suscription/cancel' method='POST' style='display: none;'>
 							".$this->csrfToken()."
 								<input type='hidden' name='id' value='".$suscriptions_expired['id']."'>
+								<textarea rows='5' class='d-none observation_hidden' name='observation'></textarea>
 							</form>
 						</li>
 						";
@@ -128,6 +130,8 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 				<i class="fa fa-times fa-4x animated rotateIn"></i>
 
 				<div id="errors-cancel" style="margin-top: 15px;"></div>
+
+				<textarea rows="5" class="form-control" id="observation-form-cancel" name="observation-form-cancel" placeholder="observation" autofocus style="resize: none;"></textarea>
 			</div>
 
 			<!--Footer-->

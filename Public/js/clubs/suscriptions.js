@@ -68,6 +68,7 @@ $(document).ready(function() {
 
 	$(".open-confirm-cancel").click(function()
 	{
+		$("#observation-form-cancel").focus();
 		$("#id-form-cancel").val( $(this).data('id') );
 		$(".form-cancel").data( "id", $(this).data('id') );
 	});
@@ -75,20 +76,22 @@ $(document).ready(function() {
 
 	$(".form-cancel").click(function(){
 		$("#errors-cancel").html('');
+		$(".observation_hidden").html('');
 		var id = $(this).data('id');
 		var form = $("#form-cancel-"+id);
 		var url = form.attr('action');
+		$(".observation_hidden").html( $("#observation-form-cancel").val() );
 		$.ajax({
 			url: url,
 			type: 'POST',
 			data: form.serialize(),
 			beforeSend: function() {
-				toastr.info("Paying subscription...");
+				toastr.info("Canceling subscription...");
 			},
 			success: function(data) {
 				if( data === 'true' )
 				{
-					toastr.success("Paid subscription.");
+					toastr.success("Canceled subscription.");
 					location.reload();
 				}else
 				{
