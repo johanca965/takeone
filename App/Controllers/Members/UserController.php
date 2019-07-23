@@ -43,6 +43,150 @@ class UserController extends Controller
 		$this->view('Members/User/profile', $params );
 	}
 
+	// función para crear una cuenta kids
+	public function kids()
+	{
+		// creamos el request 
+		$params = [
+			'countries' => $this->countryModel->listSimple(),
+		];
+		$this->view('Members/User/kids', $params );
+	}
+
+	// función para seleccionar otra cuenta
+	public function select_account()
+	{
+		// creamos el request 
+		$params = [
+			'users' => $this->userModel->findByUsername( $this->Auth()->user()->username() ),
+		];
+		$this->view('Members/User/select_account', $params );
+	}
+
+	public function change_account( $id = "" )
+	{
+		// validamos que venga algo por url
+		if( !isset( $id ) or empty( $id  ) )
+			// redireccionamos al listado de clubs
+			$this->location('Members/Welcome');
+
+		$user = mysqli_fetch_assoc( $this->userModel->find( $id ) );
+		// cambiamos todos los datos de la sesión
+		$_SESSION["id"] = $user["id"];
+		$_SESSION["name"] = $user["name"];
+		$_SESSION["slug"] = $user["slug"];
+		$_SESSION["username"] = $user["username"];
+		$_SESSION["email_verified_at"] = $user["email_verified_at"];
+		$_SESSION["role_id"] = $user["role_id"];
+		$_SESSION["photo"] = $user["photo"];
+		$_SESSION["online"] = $user["online"];
+		$_SESSION["type_account"] = $user["type_account"];
+		$_SESSION["parent_account"] = $user["parent_account"];
+		$_SESSION["created_at"] = $user["created_at"];
+		$_SESSION["updated_at"] = $user["updated_at"];
+
+		// redireccionamos al listado de clubs
+		$this->location('Members/Welcome');
+	}
+
+
+	// función para actualizar un registro
+	public function store_kid()
+	{
+		// validar método post
+		$this->methodPost();
+		// validación de campos
+		$errors = $this->validate( $_POST, [
+			'country_id' => 'required|number',
+			'city' => 'required',
+			'name' => 'required',
+		]);
+		// validamos si existe un error
+		if( $errors )
+		{
+			// mostramos el error
+			echo $this->errors();
+			// evitamos que siga la función
+			return;
+		}
+		// creamos un array que contiene los datos a guardar
+		$request = [
+			'name' => $_POST['name'],
+			'slug' =>  SlugTrait::slug( $_POST['name'] ),
+			'username' => $_POST['username'],
+			'email_verified_at' => date('Y-m-d H:i:s'),
+			'photo' => SlugTrait::slug( $_POST['username'] ).'/'.$_POST['photo'],
+			'role_id' => '1',
+			'type_account' => 'kid',
+			'parent_account' => $this->Auth()->user()->id(),
+			'created_at' => date('Y-m-d H:i:s'),
+			'updated_at' => date('Y-m-d H:i:s')
+		];	
+
+		// validamos si la foto viene vacía
+		if( empty( $_POST['photo'] ) )
+			// la sacamos de la listaa para evitar actualizarla
+			unset( $request['photo'] );
+		// realizamos la petición
+		$result = $this->userModel->store( $request );
+		// validamos si existe error
+		if( !$result )
+		{
+			// agregamos el mensaje de error
+			array_push( $this->errors, $result );
+			// mostramos el mensaje de error
+			echo $this->errors();
+		}
+		else
+		{
+			// obtenems los datos del usuario
+			$data = mysqli_fetch_assoc( $this->userModel->findByNameAndUsername( $_POST['name'], $_POST['username'] ) );
+			// request que se enviara a actualizar
+			$request = [
+				'user_id' => $data['id'],
+				'country_id' => $_POST['country_id'],
+				'city' => $_POST['city'],
+				'rfid' => $_POST['rfid'],
+				'cpr' => $_POST['cpr'],
+				'passport' => $_POST['passport'],
+				'helth_issues' => $_POST['helth_issues'],
+				'gender' => $_POST['gender'],
+				'marital' => $_POST['marital'],
+				'bloodtype' => $_POST['bloodtype'],
+				'birthday' => $_POST['birthday'],
+				'address' => $_POST['address'],
+				'mobile' => $_POST['mobile'],
+				'social_link' => $_POST['social_link'],
+			];
+			// realizamos la petición
+			$result = $this->userdataModel->store( $request );
+			// validamos si existe error
+			if( !$result )
+			{
+			// agregamos el mensaje de error
+				array_push( $this->errors, $result );
+			// mostramos el mensaje de error
+				echo $this->errors();
+			}
+			else
+			{
+				// creamos un arrau que contiene los datos a registrar
+				$request = [
+					'user_id' => $this->Auth()->user()->id(),
+					'tabla' => 'Users',
+					'action' => 'Upgrade',
+					'code' => $data['id'],
+					'description' => 'User update with code ' . $data['id'] .' for the following data with their respective values: name: ' . $data['name'] .', slug: ' . SlugTrait::slug( $data['name'] ) .' created the day ' . $data['created_at'] . '.',
+					'created_at' => date('Y-m-d H:i:s')
+				];
+				// realizamos la petición
+				$this->auditModel->store( $request );
+				// mostramos mensaje de éxito
+				echo 'true';
+			}
+		}
+	}
+
 	// función para actualizar un registro
 	public function update()
 	{
@@ -133,7 +277,7 @@ class UserController extends Controller
 					'tabla' => 'Users',
 					'action' => 'Upgrade',
 					'code' => $_POST['id'],
-					'description' => 'User update with code ' . $_POST['id'] .' pfor the following data with their respective values: name: ' . $data['name'] .', slug: ' . SlugTrait::slug( $data['name'] ) .' created the day ' . $data['created_at'] . '.',
+					'description' => 'User update with code ' . $_POST['id'] .' for the following data with their respective values: name: ' . $data['name'] .', slug: ' . SlugTrait::slug( $data['name'] ) .' created the day ' . $data['created_at'] . '.',
 					'created_at' => date('Y-m-d H:i:s')
 				];
 				// realizamos la petición
@@ -142,6 +286,32 @@ class UserController extends Controller
 				echo 'true';
 			}
 		}
+	}
+
+
+	public function chante_to_father_account()
+	{
+		// creamos un array que contiene los datos a guardar
+		$request = [
+			'id' => $this->Auth()->user()->id(),
+			'type_account' => 'father',
+			'updated_at' => date('Y-m-d H:i:s')
+		];
+		// realizamos la petición
+		$result = $this->userModel->update( $request );
+			// validamos si existe error
+		if( !$result )
+		{
+			// agregamos el mensaje de error
+			array_push( $this->errors, $result );
+			// mostramos el mensaje de error
+			echo $this->errors();
+		}
+		else
+		{
+			// mostramos mensaje de éxito
+			echo 'true';
+		}	
 	}
 
 	// función para subir el logo del club

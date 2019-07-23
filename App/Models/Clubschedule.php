@@ -57,6 +57,20 @@ class Clubschedule extends Model
 	}
 
 	// función para almacenar un registro
+	public function findByPackageandClubandDay( $club_id, $package_id, $day )
+	{
+		// ejecutamos la consulta
+		return parent::simple(" SELECT * FROM " . $this->table ." WHERE club_id = '".$club_id."' and package_id = '".$package_id."' and days LIKE '%".$day."%'  ");
+	}
+
+	// función para almacenar un registro
+	public function findByClubandDay( $club_id, $day )
+	{
+		// ejecutamos la consulta
+		return parent::simple(" SELECT * FROM " . $this->table ." WHERE club_id = '".$club_id."' and days LIKE '%".$day."%' ");
+	}
+
+	// función para almacenar un registro
 	public function listado( $package_id, $club_id )
 	{
 		if( empty($package_id) )
@@ -75,10 +89,11 @@ class Clubschedule extends Model
 	}
 
 	// función para obtener la cantidad de miembros que deben asistir a clases
-	public function allMembersWithClubAndDay( $club_id, $day )
+	public function allMembersWithClubAndDay( $club_id, $day, $date )
 	{
+		$date_sus = explode('-', $date);
 		// ejecutamos la consulta
-		return parent::simple( ' SELECT count(*) as cant FROM ' . $this->table . ' t1 INNER JOIN club_packages t2 ON t1.package_id = t2.id INNER JOIN member_packages t3 ON t3.package_id = t1.package_id INNER JOIN members t4 ON t4.id = t3.member_id WHERE t1.club_id = "'.$club_id.'" and t1.days LIKE "%'.$day.'%" and t4.accepted = "2" and t4.active = "2" GROUP BY t1.package_id ' );
+		return parent::simple( ' SELECT count(*) as cant FROM ' . $this->table . ' t1 INNER JOIN club_packages t2 ON t1.package_id = t2.id INNER JOIN member_packages t3 ON t3.package_id = t1.package_id INNER JOIN members t4 ON t4.id = t3.member_id INNER JOIN suscriptions t5 ON t5.member_id = t4.id WHERE t1.club_id = "'.$club_id.'" and t1.days LIKE "%'.$day.'%" and t4.accepted = "2" and t4.active = "2" and t5.state = "paid" and t5.created_at LIKE "%'.$date_sus[0].'-'.$date_sus[1].'-%" ' );
 	}
 
 }

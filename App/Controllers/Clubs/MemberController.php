@@ -27,6 +27,8 @@ class MemberController extends Controller
 		$this->suscriptionModel = $this->model('suscription');
 		// con esto instanciamos el modelo correspondiente
 		$this->memberpackageModel = $this->model('Memberpackage');
+		// importamos el modelo correspondiente
+		$this->suscriptionpackageModel = $this->model('Suscriptionpackage');
 
 	}
 
@@ -53,7 +55,8 @@ class MemberController extends Controller
 		$member = mysqli_fetch_assoc( $this->memberModel->findMemberWithClub( $club['id'], $user['id'] ) );
 		$params = [
 			'member' => $member,
-			'packages' => $this->memberpackageModel->findByMemberID( $member['member_id'] ),
+			'club' => $club,
+			'suscriptions' => $this->suscriptionModel->getAllByMemberID( $member['member_id'] ),
 			'breadcrumb_data' => '
 				<li>
                     <a title="List members" href="'.RUTA_URL.'/Clubs/Member/">
@@ -71,7 +74,7 @@ class MemberController extends Controller
 		$club = mysqli_fetch_assoc( $this->clubModel->findByUserID( $this->Auth()->user()->id() ) );
 		$params = [
 			'club' => $club,
-			'country' => $this->countryModel->find( $club['country_id'] ),
+			'country' => $this->countryModel->listSimple(),
 			'clubpackages' => $this->clubpackageModel->findByCludID( $club['id'] ),
 			'breadcrumb_data' => '
 				<li>
@@ -269,6 +272,8 @@ class MemberController extends Controller
 			$request = [
 				'id' => $userdata['id'],
 				'city' => $_POST['city'],
+				'cpr' => $_POST['cpr'],
+				'mobile' => $_POST['mobile'],
 			];
 			// realizamos la petición
 			$this->userdataModel->update( $request );
@@ -324,6 +329,7 @@ class MemberController extends Controller
 				'club_id' => $_POST['club_id'],
 				'member_id' => $member['member_id'],
 				'price' => $total_first_suscription,
+				'total_discount' => 0,
 				'payment_method' => 'cash',
 				'state' => 'approval',
 				'created_at' => $time,
@@ -333,6 +339,18 @@ class MemberController extends Controller
 			$this->suscriptionModel->store( $request );
 			// buscamos los datos de la suscripción
 			$suscription = mysqli_fetch_assoc( $this->suscriptionModel->findByClubUserIDDate( $_POST['club_id'], $member['member_id'], $time ) );
+			// recorremos los paquetes de donde se calculo el total
+			foreach ($_POST['packages'] as $package) 
+			{
+					// creamos la notificación de nuevo miembro
+				$request = [
+					'suscription_id' => $suscription['id'],
+					'package_id' => $package,
+					'created_at' => date('Y-m-d H:i:s')
+				];
+					// creamos la nueva notificacion
+				$this->suscriptionpackageModel->store( $request );
+			}
 			// creamos la notificación de nuevo miembro
 			$request = [
 				'club_id' => $_POST['club_id'],
@@ -420,6 +438,50 @@ class MemberController extends Controller
 		}
 	}
 
+	public function update_rfid()
+	{
+		$this->methodPost();
+		// validamos que existan los campos
+		$errors = $this->validate( $_POST, [
+			'member_id' => 'required',
+			'rfid' => 'required'
+		] );
+
+		if( $errors )
+		{
+			echo $this->errors();
+			return;
+		}
+		// buscamos los datos del miembro
+		$member = mysqli_fetch_assoc( $this->memberModel->find( $_POST['member_id'] ) );
+		// buscamos los datos del usuario
+		$user = mysqli_fetch_assoc( $this->userModel->find( $member['user_id'] ) );
+		// buscamos los datos del usuario
+		$user_data = mysqli_fetch_assoc( $this->userdataModel->findByUser( $user['id'] ) );
+		// creamos la notificación de nuevo miembro
+		$request = [
+			'id' => $user_data['id'],
+			'rfid' => $_POST['rfid'],
+			'updated_at' => date('Y-m-d H:i:s')
+		];
+		
+		$result = $this->userdataModel->update( $request );
+		// validamos si existe error
+		if( !$result )
+		{
+			// agregamos el mensaje de error
+			array_push( $this->errors, $result );
+			// mostramos el mensaje de error
+			echo $this->errors();
+		}
+		else
+		{
+			// lo mandamos a loguearde si todo esta correcto
+			echo "true";
+		}
+
+	}
+
 
 	// función para validar la membresia de un usuario
 	public function validateMember( $member_id, $accepted, $active )
@@ -437,15 +499,15 @@ class MemberController extends Controller
 			if( $active == 1 )
 			{
 				return '
-				<a href="#" data-member-id="'.$member_id.'" data-url="'.RUTA_URL.'/Clubs/Member/Accepted" data-accepted="4" class="btn btn-danger accepted_member" title="Delete member">Delete</a>
-				<a href="#" data-member-id="'.$member_id.'" data-url="'.RUTA_URL.'/Clubs/Member/Active" data-active="2" class="btn btn-danger active_member" title="Unlocked member">Unlocked</a>
+				<a href="#" data-member-id="'.$member_id.'" data-url="'.RUTA_URL.'/Clubs/Member/Accepted" data-accepted="4" class="btn btn-danger accepted_member" title="Release member">Release</a>
+				<a href="#" data-member-id="'.$member_id.'" data-url="'.RUTA_URL.'/Clubs/Member/Active" data-active="2" class="btn btn-danger active_member" title="Unblock member">Unblock</a>
 				';
 			}
 			else
 			{
 				return '
-				<a href="#" data-member-id="'.$member_id.'" data-url="'.RUTA_URL.'/Clubs/Member/Accepted" data-accepted="4" class="btn btn-danger accepted_member" title="Delete member">Delete</a>
-				<a href="#" data-member-id="'.$member_id.'" data-url="'.RUTA_URL.'/Clubs/Member/Active" data-active="1" class="btn btn-danger active_member" title="Locked member">Locked</a>
+				<a href="#" data-member-id="'.$member_id.'" data-url="'.RUTA_URL.'/Clubs/Member/Accepted" data-accepted="4" class="btn btn-danger accepted_member" title="Release member">Release</a>
+				<a href="#" data-member-id="'.$member_id.'" data-url="'.RUTA_URL.'/Clubs/Member/Active" data-active="1" class="btn btn-danger active_member" title="Block member">Block</a>
 				';
 			}
 		}
@@ -453,6 +515,51 @@ class MemberController extends Controller
 		{
 			return '<a href="#" data-member-id="'.$member_id.'" data-url="'.RUTA_URL.'/Clubs/Member/Accepted" data-accepted="2" class="btn btn-danger accepted_member" title="Rejoin member">Rejoin</a>';
 		}
+	}
+
+	// función para buscar los packetes de una suscripción
+	public function find_packages_by_suscription_id( $suscription_id, $price )
+	{
+		// buscamos los paquetes que tiene la suscripción
+		$packages = $this->suscriptionpackageModel->findBySuscriptionId( $suscription_id );
+		// validamos que existan datos
+		if( $packages && $packages->num_rows > 0 )
+		{
+			// variable que contendra el nombre de los paquetes
+			$package_title = '';
+			// variable que obtendra el total de los paquetes
+			$total = 0.0;
+			// recorremos los paquetes
+			foreach ($packages as $package) 
+			{
+				// buscamos todos los datos del 
+				$package_data = $this->clubpackageModel->find( $package['id'] );
+				// validamos que existan datos
+				if( $package_data && $package_data->num_rows > 0 )
+				{
+					$package_data = mysqli_fetch_assoc( $package_data );
+					// vamos sumando el valor del paquete
+					$total += $package_data['price'];
+				}
+				// vamos concatenando
+				$package_title .= $package['title'].", ";
+			}
+			if( $price > $total )
+				// vamos concatenando
+				$package_title .= "Administration free, ";
+			// eliminamos la , y el espacio en blanco
+			$package_title = substr( $package_title, 0, -2 );
+			// retornamos los paquetes
+			return $package_title;
+		}
+	}
+
+	// función para sumar 30 días a la fecha
+	public function expire_date( $fecha )
+	{
+		$nuevafecha = strtotime ( '+30 day' , strtotime ( $fecha ) ) ;
+		$nuevafecha = date ( 'Y-m-d' , $nuevafecha );
+		return $nuevafecha;
 	}
 
 	// función para enviar el correo al nuevo miembro de la plataforma
@@ -474,7 +581,6 @@ class MemberController extends Controller
 	}
 
 
-
 	// función para convertir la fecha en amigable para el usuario
 	public function convertDate( $date )
 	{
@@ -484,7 +590,18 @@ class MemberController extends Controller
 		$fecha = explode( '-', $fecha[0] );
 		// array para mostrar el mes en español
 		$meses = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
-		return $meses[ $fecha[1] - 1 ]. " ".$fecha[2].", ".$fecha[0] ;
+		return $meses[ $fecha[1] - 1 ]. " ".$fecha[2].", ".$fecha[0];
+	}
+
+	// función para convertir la fecha en amigable para el usuario
+	public function convertDateAll( $date )
+	{
+		$fecha_exp = explode( ' ', $date );
+		// explotamos la fecha para obtener y, m, d
+		$fecha = explode( '-', $fecha_exp[0] );
+		// array para mostrar el mes en español
+		$meses = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
+		return $meses[ $fecha[1] - 1 ]. " ".$fecha[2].", ".$fecha[0]." at ".$fecha_exp[1];
 	}
 
 	// función para convertir la fecha en amigable para el usuario

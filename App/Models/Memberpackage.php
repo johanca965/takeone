@@ -54,4 +54,9 @@ class Memberpackage extends Model
 		return parent::simple(" SELECT t2.* FROM ". $this->table ." t1 INNER JOIN club_packages t2 ON t2.id = t1.package_id WHERE t1.member_id = '". $member_id ."' ");
 	}
 
+	public function findByMemberandPackageID( $member_id, $package_id )
+	{
+		return parent::simple(" SELECT t1.id FROM ". $this->table ." t1 INNER JOIN club_packages t2 ON t2.id = t1.package_id WHERE t1.member_id = '". $member_id ."' and package_id = '".$package_id."' ");
+	}
+
 }

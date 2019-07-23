@@ -25,6 +25,8 @@ class InvitationController extends Controller
 		$this->clubtrainnerModel = $this->model('Clubtrainner');
 		// importamos el modelo correspondiente
 		$this->suscriptionModel = $this->model('suscription');
+		// importamos el modelo correspondiente
+		$this->suscriptionpackageModel = $this->model('Suscriptionpackage');
 	}
 
 	public function index(){}
@@ -191,6 +193,18 @@ class InvitationController extends Controller
 			$this->suscriptionModel->store( $request );
 			// buscamos los datos de la suscripción
 			$suscription = mysqli_fetch_assoc( $this->suscriptionModel->findByClubUserIDDate( $_POST['club_id'], $member['id'], $time ) );
+			// recorremos los paquetes de donde se calculo el total
+			foreach ($_POST['packages'] as $package) 
+			{
+				// creamos la notificación de nuevo miembro
+				$request = [
+					'suscription_id' => $suscription['id'],
+					'package_id' => $package,
+					'created_at' => date('Y-m-d H:i:s')
+				];
+				// creamos la nueva notificacion
+				$this->suscriptionpackageModel->store( $request );
+			}
 			// creamos la notificación de nuevo miembro
 			$request = [
 				'club_id' => $_POST['club_id'],

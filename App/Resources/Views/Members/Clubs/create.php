@@ -17,19 +17,19 @@ require_once RUTA_RESOURCES."/Views/Geolocation/ad.php";
 				</h3>
 				<hr>
 			</div>
-			<div class="col-12 col-md-6">
+			<div class="col-xs-12 col-md-6">
 				<div class="form-group">
 					<label for="title">Title (*)</label>
 					<input type="text" class="form-control validate_crop_image" id="title" name="title" placeholder="Title">
 				</div>
 			</div>
-			<div class="col-12 col-md-6">
+			<div class="col-xs-12 col-md-6">
 				<div class="form-group">
 					<label for="established">Established (*)</label>
 					<input type="date" class="form-control" id="established" name="established" placeholder="Established">
 				</div>
 			</div>
-			<div class="col-12 col-md-6">
+			<div class="col-xs-12 col-md-6">
 				<div class="form-group">
 					<label for="country_id">Country (*)</label>
 					<select id="country_id" name="country_id" class="browser-default form-control" data-url="<?php echo RUTA_URL; ?>/Location/states/">
@@ -42,55 +42,55 @@ require_once RUTA_RESOURCES."/Views/Geolocation/ad.php";
 					</select>
 				</div>
 			</div>
-			<div class="col-12 col-md-6">
+			<div class="col-xs-12 col-md-6">
 				<div class="form-group">
 					<label for="city">City (*)</label>
 					<input type="text" name="city" id="city" class="form-control" value="">
 				</div>
 			</div>		
-			<div class="col-12 col-md-6">
+			<div class="col-xs-12 col-md-6">
 				<div class="form-group">
 					<label for="address_line1">Address line 1</label>
 					<input type="text" class="form-control" id="address_line1" name="address_line1" placeholder="Address line 1">
 				</div>
 			</div>
-			<div class="col-12 col-md-6">
+			<div class="col-xs-12 col-md-6">
 				<div class="form-group">
 					<label for="address_line2">Address line 2</label>
 					<input type="text" class="form-control" id="address_line2" name="address_line2" placeholder="Address line 2">
 				</div>
 			</div>
-			<div class="col-12 col-md-6" style="display: none;">
+			<div class="col-xs-12 col-md-6" style="display: none;">
 				<div class="form-group">
 					<label for="lat">Latitude</label>
 					<input type="text" class="form-control" id="lat" name="lat" placeholder="Latitude">
 				</div>
 			</div>
-			<div class="col-12 col-md-6" style="display: none;">
+			<div class="col-xs-12 col-md-6" style="display: none;">
 				<div class="form-group">
 					<label for="lon">Longitude</label>
 					<input type="text" class="form-control" id="lon" name="lon" placeholder="Longitude">
 				</div>
 			</div>
-			<div class="col-12 col-md-6">
+			<div class="col-xs-12 col-md-6">
 				<div class="form-group">
 					<label for="phone">Phone (*)</label>
 					<input type="text" class="form-control" id="phone" name="phone" placeholder="Phone">
 				</div>
 			</div>	
-			<div class="col-12 col-md-6">
+			<div class="col-xs-12 col-md-6">
 				<div class="form-group">
 					<label for="email">Email (*)</label>
 					<input type="text" class="form-control" id="email" name="email" placeholder="Email">
 				</div>
 			</div>	
-			<div class="col-12 col-md-6">
+			<div class="col-xs-12 col-md-6">
 				<div class="form-group">
 					<label for="uniqe_id">Unique ID (*)</label>
 					<input type="text" class="form-control" id="uniqe_id" name="uniqe_id" placeholder="Unique ID">
 				</div>
 			</div>	
-			<div class="col-12 col-md-6">
+			<div class="col-xs-12 col-md-6">
 				<div class="form-group">
 					<label for="uniqe_id">Currency (*)</label>
 					<select name="currency" id="currency" class="browser-default form-control">
@@ -102,21 +102,24 @@ require_once RUTA_RESOURCES."/Views/Geolocation/ad.php";
 					</select>
 				</div>
 			</div>		
-			<div class="col-12 col-md-6">
+			<div class="col-xs-12 col-md-6">
 				<div class="form-group">
 					<label for="upload_img">Logo (*)</label>
 					<input type="file" name="upload_image" id="upload_image">
 					<input type="hidden" class="input_crop_image" name="logo" id="logo">
 				</div>
 			</div>
-			<div class="col-12 col-md-6">
+			<div class="col-xs-12 col-md-6">
 				<div class="form-group">
 					<label for="administration_fee">Administration fee</label>
 					<input type="number" class="form-control" id="administration_fee" name="administration_fee" placeholder="Administration fee" value="<?php echo $params['club']['administration_fee']; ?>" step="0.01" min="0">
 				</div>
 			</div>	
-			<div class="col-12 col-md-6" style="margin-bottom: 10px;">
+			<div class="col-xs-12 col-md-6" style="margin-bottom: 10px;">
 				<a href="#" class="btn-geolocation btn btn-primary">Select your location</a>
+			</div>
+			<div class="col-xs-12" style="margin-bottom: 10px;">
+				<small>By clicking "Found", you accept our <a href="<?php echo RUTA_URL; ?>/Members/Club/Terms-Conditions" target="_new" class="red-text" title="Terms and Conditions">Terms and Conditions</a>.</small>
 			</div>
 		</div>
 		<div class="row">

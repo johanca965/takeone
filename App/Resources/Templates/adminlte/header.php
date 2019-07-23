@@ -250,13 +250,19 @@
                 <!-- Sidebar Menu -->
                 <ul class="sidebar-menu" data-widget="tree">
                     <?php if( $this->Auth()->user()->role() == 1 ){ ?>
-                        <li class="header">Clubs</li>
                         <li class="<?php echo $this->validateUrl( 'Members/Welcome' ); ?>">
                             <a href="<?php echo RUTA_URL; ?>/Members/Welcome">
                                 <i class="fa fa-home"></i>
                                 <span>Home</span>
                             </a>
                         </li>
+                        <li class="<?php echo $this->validateUrl( '/Members/Training' ); ?>">
+                            <a href="<?php echo RUTA_URL; ?>/Members/Training">
+                                <i class="fa fa-dumbbell"></i>
+                                <span>Training</span>
+                            </a>
+                        </li>  
+                        <li class="header">Clubs</li>
                         <li class="<?php echo $this->validateUrl( '/Members/Club/My-clubs' ); ?>">
                             <a href="<?php echo RUTA_URL; ?>/Members/Club/My-clubs">
                                 <i class="fa fa-vihara"></i>
@@ -274,13 +280,31 @@
                                 <i class="fa fa-plus-circle"></i> 
                                 <span>Found a club</span>
                             </a>
-                        </li>
-                        <li class="<?php echo $this->validateUrl( '/Members/Training' ); ?>">
-                            <a href="<?php echo RUTA_URL; ?>/Members/Training">
-                                <i class="fa fa-dumbbell"></i>
-                                <span>Training</span>
+                        </li> 
+                        <li class="header">Kids accounts</li>
+                        <?php if( $this->Auth()->user()->type_account() == "normal" ){ ?>
+                        <li class="">
+                            <a href="#" data-toggle='modal' data-target='#modalChangeParentAccount'>
+                                <i class="fa fa-exchange-alt"></i>
+                                <span>Convert to father account</span>
                             </a>
-                        </li>   
+                        </li>
+                        <?php } elseif( $this->Auth()->user()->type_account() == "father" ){ ?>
+                            <li class="<?php echo $this->validateUrl( 'Members/User/Kids' ); ?>">
+                                <a href="<?php echo RUTA_URL; ?>/Members/User/Kids">
+                                    <i class="fa fa-user"></i>
+                                    <span>New</span>
+                                </a>
+                            </li>
+                        <?php }  ?>
+                        <?php if( $this->Auth()->user()->type_account() != "normal" ){ ?>
+                        <li class="">
+                            <a href="<?php echo RUTA_URL; ?>/Members/User/Select-account">
+                                <i class="fa fa-exchange-alt"></i>
+                                <span>Change account</span>
+                            </a>
+                        </li>
+                        <?php }  ?>
                     <?php } elseif( $this->Auth()->user()->role() == 2 ){ ?> 
                         <li class="header">My Club</li>
                         <li class="<?php echo $this->validateUrl( 'Clubs/Welcome' ); ?>">
@@ -289,8 +313,8 @@
                                 <span>Statistics</span>
                             </a>
                         </li>
-                        <li class="<?php echo $this->validateUrl( 'Clubs/Schedule' ); ?>">
-                            <a href="<?php echo RUTA_URL; ?>/Clubs/Schedule">
+                        <li class="<?php echo $this->validateUrl( 'Clubs/Schedule/List' ); ?>">
+                            <a href="<?php echo RUTA_URL; ?>/Clubs/Schedule/List">
                                 <i class="fa fa-clock"></i>
                                 <span>Schedule</span>
                             </a>
@@ -321,8 +345,8 @@
                                 <span>Manage</span>
                             </a>
                         </li>
-                        <li class="<?php echo $this->validateUrl( 'Clubs/Training' ); ?>">
-                            <a href="<?php echo RUTA_URL; ?>/Clubs/Training">
+                        <li class="<?php echo $this->validateUrl( 'Clubs/Training/List' ); ?>">
+                            <a href="<?php echo RUTA_URL; ?>/Clubs/Training/List">
                                 <i class="fa fa-dumbbell"></i>
                                 <span>Attendence</span>
                             </a>
@@ -404,6 +428,39 @@
             </div>
         </section>
     <?php } ?>
+
+    <!-- model for the change to the parent account -->
+    <div class="modal fade" id="modalChangeParentAccount" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm modal-notify" role="document">
+            <!--Content-->
+            <div class="modal-content text-center">
+                <form id="form-create" method="post" action="<?php echo RUTA_URL; ?>/Clubs/Suscription/payment" autcomplete="off">
+                    <?php echo $this->csrfToken(); ?>
+                    <!--Header-->
+                    <div class="modal-header bg-danger d-flex justify-content-center">
+                        <p class="heading">Are you sure to change your account to father?</p>
+                    </div>
+
+                    <!--Body-->
+                    <div class="modal-body">
+                        <i class="fa fa-exchange-alt fa-4x animated rotateIn"></i>
+                        <div style="margin-top: 15px;">
+                            <p>By making the account change you can have full access to accounts for children, which will be managed from your father account.</p>
+                        </div>
+                        <div id="errors-change-to-father-account" style="margin-top: 15px;"></div>
+                    </div>
+
+                    <!--Footer-->
+                    <div class="modal-footer flex-center">
+                        <button type="submit" id="btn-form-change-to-father-account" data-url="<?php echo RUTA_URL; ?>/Members/User/Chante-to-father-account" class="btn btn-primary">Yes</button>
+                        <a type="button" class="btn  btn-danger waves-effect" data-dismiss="modal">No</a>
+                    </div>
+                </form>
+            </div>
+            <!--/.Content-->
+        </div>
+    </div>
+
 
     <!-- Main content -->
     <section class="content container-fluid">

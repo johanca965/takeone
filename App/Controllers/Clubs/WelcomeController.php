@@ -32,7 +32,7 @@ class WelcomeController extends Controller
 			'cant_sales' => mysqli_fetch_assoc( $this->saleModel->salesWithClub( $result['id'] ) ),
 			'cant_suscriptions' => mysqli_fetch_assoc( $this->suscriptionModel->suscriptionWithClub( $result['id'] ) ),
 			'cant_attendence' => mysqli_fetch_assoc( $this->trainingModel->trainingWithClub( $result['id'], date('Y-m-d') ) ),
-			'all_members' => mysqli_fetch_assoc( $this->clubscheduleModel->allMembersWithClubAndDay( $result['id'], date('l') ) ),
+			'all_members' => mysqli_fetch_assoc( $this->clubscheduleModel->allMembersWithClubAndDay( $result['id'], date('l'), date('Y-m-d') ) ),
 			'breadcrumb_data' => '<li class="active">Statistics</li>'
 		];
 		if( empty($params['all_members']['cant']) )

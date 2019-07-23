@@ -60,7 +60,7 @@ class Member extends Model
 	public function findMemberWithClub( $club_id, $user_id )
 	{
 		// ejecutamos la consulta
-		return parent::simple( ' SELECT t1.*, t1.id as member_id, t2.*, t3.*, t4.name as country FROM  ' . $this->table . ' t1 INNER JOIN users t2 ON t1.user_id = t2.id INNER JOIN user_data t3 ON t3.user_id = t2.id INNER JOIN countries t4 ON t3.country_id = t4.id WHERE t1.user_id = "'.$user_id.'" and t1.club_id = "'.$club_id.'" ' );
+		return parent::simple( ' SELECT t1.*, t1.id as member_id, t2.id, t2.name, t2.photo, t2.username, t3.mobile, t3.city, t3.address, t3.cpr, t3.rfid, t3.passport, t4.name as country FROM  ' . $this->table . ' t1 INNER JOIN users t2 ON t1.user_id = t2.id INNER JOIN user_data t3 ON t3.user_id = t2.id INNER JOIN countries t4 ON t3.country_id = t4.id WHERE t1.user_id = "'.$user_id.'" and t1.club_id = "'.$club_id.'" ' );
 	}
 
 	// función para contar la cantidad de mienbros del club

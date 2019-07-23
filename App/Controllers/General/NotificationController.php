@@ -17,6 +17,10 @@ class NotificationController extends Controller
 		$this->clubModel = $this->model('Club');
 		// importamos el modelo correspondiente
 		$this->userModel = $this->model('User');
+		// importamos el modelo correspondiente
+		$this->memberModel = $this->model('Member');
+		// importamos el modelo correspondiente
+		$this->suscriptionModel = $this->model('Suscription');
 
 	}
 
@@ -97,15 +101,15 @@ class NotificationController extends Controller
 		$this->view('Members/Notification/index', $params);
 	}
 
-
+	// función para cargar los datos de las notificaciones en la cabecera
 	public function clubnotification()
 	{
 		// obtenemos los datos del club
 		$club = mysqli_fetch_assoc( $this->clubModel->findByUserID( $this->Auth()->user()->id() ) );
 		// buscamos la cantidad de miembros
-		$result_newmembers = mysqli_fetch_assoc( $this->clubnotificationModel->findByClubNewsMembers( $club['id'] ) );
+		$result_newmembers = $this->new_members_club( $club['id'] );
 		// buscamos la cantidad de suscripciones por aprobar
-		$result_paymentapproval = mysqli_fetch_assoc( $this->clubnotificationModel->findByClubPaymentApproval( $club['id'] ) );
+		$result_paymentapproval = $this->payment_approval( $club['id'] );
 		// buscamos la cantidad de suscripciones expiradas
 		$result_suscriptionexpired = mysqli_fetch_assoc( $this->clubnotificationModel->findByClubSuscriptionExpired( $club['id'] ) );
 		// buscamos la cantidad de miembros de cumpleañs
@@ -117,7 +121,7 @@ class NotificationController extends Controller
 		// variable que contiene las celdas a mostrar en el listado
 		$rows = '';
 		// validamos que no tengamos un problema
-		if( $result_newmembers['cant'] < 1 && $result_paymentapproval['cant'] < 1 && $result_suscriptionexpired['cant'] < 1 && $result_birthdaymembers['cant'] < 1 && $result_stockempty['cant'] < 1 )
+		if( $result_newmembers < 1 && $result_paymentapproval < 1 && $result_suscriptionexpired['cant'] < 1 && $result_birthdaymembers['cant'] < 1 && $result_stockempty['cant'] < 1 )
 		{
 			$rows = '
 					<li>
@@ -129,21 +133,22 @@ class NotificationController extends Controller
 		else
 		{
 			// validamos la cantidad de resultados
-			if( $result_newmembers['cant'] > 0 )
+			if( $result_newmembers > 0 )
 			{
+
 				$rows .= '
 					<li>
 						<a href="'.RUTA_URL.'/Clubs/Member" style="min-height: 30px !important; width: 100% !important; !important; display: block; color: grey; padding: 5px; border-bottom: 1px solid #eee;">
 							<span class="pull-left" style="margin-right: 10px; color: #2794E1;">
 								<i class="fa fa-users"></i>
 							</span>
-	                        <span>'.$result_newmembers['cant'].' New awaiting acceptance.</span>
+	                        <span>'.$result_newmembers.' New awaiting acceptance.</span>
 						</a>
 					</li>
 				';
 			}
 			// validamos la cantidad de resultados
-			if( $result_paymentapproval['cant'] > 0 )
+			if( $result_paymentapproval > 0 )
 			{
 				$rows .= '
 					<li>
@@ -151,7 +156,7 @@ class NotificationController extends Controller
 							<span class="pull-left" style="margin-right: 10px; color: #E09A1F;">
 								<i class="fa fa-money-bill-wave"></i>
 							</span>
-	                        <span>'.$result_paymentapproval['cant'].' Awaiting payment approval.</span>
+	                        <span>'.$result_paymentapproval.' Awaiting payment approval.</span>
 						</a>
 					</li>
 				';
@@ -198,12 +203,12 @@ class NotificationController extends Controller
 					</li>
 				';
 			}
-			echo ($result_newmembers['cant']+$result_paymentapproval['cant']+$result_suscriptionexpired['cant']+$result_birthdaymembers['cant']+$result_stockempty['cant'])."|".$rows;
+			echo ($result_newmembers+$result_paymentapproval+$result_suscriptionexpired['cant']+$result_birthdaymembers['cant']+$result_stockempty['cant'])."|".$rows;
 		}
 	}
 
 
-
+	// función para mostrar las notificaciones del club
 	public function clubnotificationlist( $notifcation_id = 'null' )
 	{
 		// obtenemos los datos del club
@@ -224,6 +229,87 @@ class NotificationController extends Controller
 			'notification_find' => mysqli_fetch_assoc( $this->clubnotificationModel->find( $notifcation_id ) ),
 		];
 		$this->view('Clubs/Notifications/list', $params);
+	}
+
+
+	// función para obtener la cantidad de nuevos miembros y eliminar las notificaciones que se pasan
+	public function new_members_club( $club_id )
+	{
+		// obtenemos las notificaciones los nuevos miembros
+		$new_members = mysqli_fetch_assoc( $this->clubnotificationModel->findByClubNewsMembers( $club_id ) );
+		// validamos si hay nuevas notificaciones
+		if( $new_members['cant'] > 0 )
+		{
+			// obtenemos el listado de las notificaciones del club
+			$new_members = $this->clubnotificationModel->getByClubNewsMembers( $club_id );
+			// obtenemos la cantidad inicial
+			$cant = $new_members->num_rows;
+			// recorremos los datos del usuario
+			foreach ($new_members as $item) 
+			{
+				// obtenemos los datos del miembro
+				$member = mysqli_fetch_assoc( $this->memberModel->find( $item['section_id'] ) );
+				// validamos si existe el miembro o si ya fue aceptado
+				if( !$member or $member['accepted'] == 2 )
+				{
+					// disminuimos la cantidad de notificaciones
+					$cant--;
+					// eliminamos esta notificación de la base de datos
+					$this->clubnotificationModel->delete( $item['id'] );
+				}
+			}
+		}
+		else
+			// asignamos un valor por defecto en 0
+			$cant = 0;		
+		// retornamos el nuevo valor
+		return $cant;
+	}
+
+
+	// función para obtener la cantidad de nuevos miembros y eliminar las notificaciones que se pasan
+	public function payment_approval( $club_id )
+	{
+		// obtenemos las notificaciones los nuevos miembros
+		$new_payment = mysqli_fetch_assoc( $this->clubnotificationModel->findByClubPaymentApproval( $club_id ) );
+		// validamos si hay nuevas notificaciones
+		if( $new_payment['cant'] > 0 )
+		{
+			// obtenemos el listado de las notificaciones del club
+			$new_payment = $this->clubnotificationModel->getByClubPaymentApproval( $club_id );
+			// obtenemos la cantidad inicial
+			$cant = $new_payment->num_rows;
+			// recorremos los datos del usuario
+			foreach ($new_payment as $item) 
+			{
+				// obtenemos los datos del miembro
+				$payment = mysqli_fetch_assoc( $this->suscriptionModel->find( $item['section_id'] ) );
+				// validamos si existe el miembro o si ya fue aceptado
+				if( !$payment or $payment['state'] == "paid" or $payment['state'] == "canceled" )
+				{
+					// disminuimos la cantidad de notificaciones
+					$cant--;
+					// eliminamos esta notificación de la base de datos
+					$this->clubnotificationModel->delete( $item['id'] );
+				}
+
+				// obtenemos los datos del miembro
+				$member = mysqli_fetch_assoc( $this->memberModel->find( $payment['member_id'] ) );
+				// validamos si existe el miembro o si ya fue aceptado
+				if( !$member )
+				{
+					// disminuimos la cantidad de notificaciones
+					$cant--;
+					// eliminamos esta notificación de la base de datos
+					$this->clubnotificationModel->delete( $item['id'] );
+				}
+			}
+		}
+		else
+			// asignamos un valor por defecto en 0
+			$cant = 0;		
+		// retornamos el nuevo valor
+		return $cant;
 	}
 
 

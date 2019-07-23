@@ -39,6 +39,13 @@ class Training extends Model
 		return parent::find( $id );
 	}
 
+	// función para almacenar un registro
+	public function delete( $id )
+	{
+		// ejecutamos la consulta
+		return parent::delete( $id );
+	}
+
 	public function findByUserID( $user_id )
 	{
 		// ejecutamos la consulta
@@ -106,10 +113,10 @@ class Training extends Model
 
 
 	// attended for club
-	public function attended( $date, $package_id )
+	public function attended( $date, $package_id, $club_id )
 	{
 		$date_sus = explode('-', $date);
-		return parent::simple( ' SELECT t3.id as member_id, t4.name, t4.slug, t4.photo FROM trainings t1 INNER JOIN club_schedule t2 ON t1.clubschedule_id = t2.id INNER JOIN members t3 ON t1.member_id = t3.id INNER JOIN users t4 ON t3.user_id = t4.id INNER JOIN club_packages t5 ON t2.package_id = t5.id INNER JOIN suscriptions t6 ON t6.member_id = t1.member_id WHERE t1.created_at LIKE "%'.$date.'%" and t5.id LIKE "%'.$package_id.'%" and t6.state = "paid" and t6.created_at LIKE "%'.$date_sus[0].'-'.$date_sus[1].'-%" ORDER BY t1.created_at DESC ' );
+		return parent::simple( ' SELECT t1.id, t3.id as member_id, t4.name, t4.slug, t4.photo FROM trainings t1 INNER JOIN club_schedule t2 ON t1.clubschedule_id = t2.id INNER JOIN members t3 ON t1.member_id = t3.id INNER JOIN users t4 ON t3.user_id = t4.id INNER JOIN club_packages t5 ON t2.package_id = t5.id INNER JOIN suscriptions t6 ON t6.member_id = t1.member_id WHERE t1.created_at LIKE "%'.$date.'%" and t5.id LIKE "%'.$package_id.'%" and t6.state = "paid" and t6.created_at LIKE "%'.$date_sus[0].'-'.$date_sus[1].'-%"  and t3.club_id = "'.$club_id.'" ORDER BY t1.created_at DESC ' );
 	}
 
 	public function hasclass( $date, $package_id )

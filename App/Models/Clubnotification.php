@@ -58,12 +58,25 @@ class Clubnotification extends Model
 		return parent::simple( ' DELETE FROM  ' . $this->table . ' WHERE section = "'.$section.'" and section_id = "'.$section_id.'" ' );
 	}
 
+	// función para obtener la nueva cantidad de miembros
+	public function findByClubIdandSectionandSectionId( $club_id, $section, $section_id )
+	{
+		// ejecutamos la consulta
+		return parent::simple( ' SELECT * FROM  ' . $this->table . ' WHERE club_id = "'.$club_id.'" and section = "'.$section.'" and section_id = "'.$section_id.'" ' );
+	}
 
-	// función para listar los registros no leidos
+	// función para obtener la nueva cantidad de miembros
 	public function findByClubNewsMembers( $club_id )
 	{
 		// ejecutamos la consulta
-		return parent::simple( ' SELECT count(*) as cant FROM  ' . $this->table . ' WHERE club_id = "'.$club_id.'" and importance = "1" ' );
+		return parent::simple( ' SELECT count(id) as cant FROM  ' . $this->table . ' WHERE club_id = "'.$club_id.'" and importance = "1" ' );
+	}
+
+	// función para listar la nueva cantidad de miembros
+	public function getByClubNewsMembers( $club_id )
+	{
+		// ejecutamos la consulta
+		return parent::simple( ' SELECT * FROM  ' . $this->table . ' WHERE club_id = "'.$club_id.'" and importance = "1" ' );
 	}
 
 	// función para contar las suscripciones por aprobat
@@ -71,6 +84,13 @@ class Clubnotification extends Model
 	{
 		// ejecutamos la consulta
 		return parent::simple( ' SELECT count(*) as cant FROM  ' . $this->table . ' WHERE club_id = "'.$club_id.'" and importance = "2" ' );
+	}
+
+	// función para listar las suscripciones por aprobat
+	public function getByClubPaymentApproval( $club_id )
+	{
+		// ejecutamos la consulta
+		return parent::simple( ' SELECT * FROM  ' . $this->table . ' WHERE club_id = "'.$club_id.'" and importance = "2" ' );
 	}
 
 	// función para contar las suscripciones expiradas

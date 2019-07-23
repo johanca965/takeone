@@ -64,4 +64,12 @@ $(document).ready(function(){
 		return false;
 	});
 
+
+	// funcion para cargar el id del miembro en la ventana
+	$(".btn-load-id-update-rfid").on('click', function(){
+		var obj = $(this);
+		var member_id = obj.data('member-id');
+		$("#member_id").val( member_id );
+	});
+
 });

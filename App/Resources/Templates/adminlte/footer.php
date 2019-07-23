@@ -109,6 +109,7 @@
     <script type="text/javascript" src="<?php echo RUTA_JS; ?>/notifications.js"></script>
     <script type="text/javascript" src="<?php echo RUTA_JS; ?>/mailverifyaccount.js"></script>
     <script type="text/javascript" src="<?php echo RUTA_JS; ?>/croppie.js"></script>
+    <script type="text/javascript" src="<?php echo RUTA_JS; ?>/members/change-to-father-account.js"></script>
 
   	<!-- Optionally, you can add Slimscroll and FastClick plugins. Both of these plugins are recommended to enhance the user experience. -->
 </body>

@@ -82,7 +82,12 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 									<h4><i class="fa fa-credit-card" style="margin-right: 5px;"></i> RFID:</h4>
 								</td>
 								<td>
-									<h4><?php echo $params['member']['rfid']; ?></h4>
+									<h4>
+										<?php echo $params['member']['rfid']; ?>
+										<a href="" class="btn-load-id-update-rfid btn btn-primary btn-sm pull-right" data-toggle='modal' data-target='#modalUpdateRfid' data-member-id="<?php echo $params['member']['member_id']; ?>">
+											<i class='fa fa-edit'></i> Update
+										</a>										
+									</h4>
 								</td>
 							</tr>
 							<tr>
@@ -111,24 +116,121 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 					</div>
 				</div>
 				<div class="box-body" style="padding: 2rem;">
-					<ul class="users-list clearfix">
+					<table id="example" class="table table-bordered" style="width:100%">
+						<thead>
+							<tr>
+								<th>State</th>
+								<th>Packages</th>
+								<th>Record date</th>
+								<th>Transaction date</th>
+								<th>Expire date</th>
+								<th>Payment type</th>
+								<th>Discount</th>
+								<th>Total</th>
+							</tr>
+						</thead>
+						<tbody>
 							<?php 
-							foreach ($params['packages'] as $package) 
+							if( $params['suscriptions']->num_rows > 0  )
+							{
+								foreach ($params['suscriptions'] as $suscriptions) 
+								{
+									if( $suscriptions['state'] == "approval" )
+									{
+										$bg = "bg-info";
+										$payment_date = "";
+									}
+									else if( $suscriptions['state'] == "expired" )
+									{
+										$bg = "bg-danger";
+										$payment_date = "";
+									}
+									else if( $suscriptions['state'] == "paid" )
+									{
+										$bg = "bg-success";
+										$payment_date = $this->convertDateAll( $suscriptions['updated_at'] );
+									}
+									else
+									{
+										$bg = "bg-warning";
+										$payment_date = "";
+									}
+									echo '
+										<tr class="'.$bg.'">
+											<td style="vertical-align: middle;">'.ucfirst( $suscriptions['state'] ).'</td>
+											<td style="vertical-align: middle;">'.$this->find_packages_by_suscription_id( $suscriptions['id'], $suscriptions['price'] ).'</td>
+											<td style="vertical-align: middle;">'.$this->convertDateAll( $suscriptions['created_at'] ).'</td>
+											<td style="vertical-align: middle;">'.$payment_date.'</td>
+											<td style="vertical-align: middle;">'.$this->convertDate( $this->expire_date( $suscriptions['created_at'] ) ).'</td>
+											<td style="vertical-align: middle;">'.ucfirst( $suscriptions['payment_method'] ).'</td>
+											<td style="vertical-align: middle;">'.$suscriptions['total_discount'].' '.$params['club']['currency'].'</td>
+											<td style="vertical-align: middle;">'.$suscriptions['price'].' '.$params['club']['currency'].'</td>
+										</tr>
+									';
+								}
+							}
+							else
 							{
 								echo "
-								<li>
-								<img src='".RUTA_IMG."/schedule/".$package['slug']."/".$package['picture']."' style='width: 128px; height: 100px;' alt='Package Image'>
-								<a class='users-list-name' href='".RUTA_URL."/Clubs/Schedule/list/".$package['id']."'>".ucwords($package['title'])."</a>
-								<span class='users-list-date'>Gender: ".ucwords($package['gender'])."</span>
-								<span class='users-list-date'>Capacity: ".ucwords($package['capacity'])."</span>
-								</li>
+								<tr>
+									<td colspan='6' class='text-center'>No results found</td>
+								</tr>
 								";
 							}
 							?>
-						</ul>
+						</tbody>
+						<tfoot>
+							<tr>
+								<th>State</th>
+								<th>Packages</th>
+								<th>Record date</th>
+								<th>Transaction date</th>
+								<th>Expire date</th>
+								<th>Payment type</th>
+								<th>Discount</th>
+								<th>Total</th>
+							</tr>
+						</tfoot>
+					</table>
 				</div>
 			</div>
 		</div>
+	</div>
+</div>
+
+
+
+<div class="modal fade" id="modalUpdateRfid" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-sm modal-notify" role="document">
+		<!--Content-->
+		<div class="modal-content text-center">
+			<form id="form-edit" method="post" action="<?php echo RUTA_URL; ?>/Clubs/Member/Update_rfid" autcomplete="off">
+				<?php echo $this->csrfToken(); ?>
+				<!--Header-->
+				<div class="modal-header bg-danger d-flex justify-content-center">
+					<p class="heading">Are you sure to update the rfid number?</p>
+				</div>
+
+				<!--Body-->
+				<div class="modal-body">
+					<i class="fa fa-credit-card fa-4x animated rotateIn"></i>
+					
+					<div id="errors-edit" style="margin-top: 15px;"></div>
+
+					<div class="form-group" style="margin-top: 15px;">
+						<input type="text" id="rfid" name="rfid" class="form-control suscription_price" placeholder="Rfid number">
+					</div>
+				</div>
+
+				<!--Footer-->
+				<div class="modal-footer flex-center">
+					<input type="hidden" id="member_id" name="member_id">
+					<button type="submit" id="btn-update-rfid" class="btn btn-primary">Yes</button>
+					<a type="button" class="btn  btn-danger waves-effect" data-dismiss="modal">No</a>
+				</div>
+			</form>
+		</div>
+		<!--/.Content-->
 	</div>
 </div>
 
@@ -136,3 +238,13 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 require_once RUTA_RESOURCES."/Templates/adminlte/footer.php";
 ?>
 <script src="<?php echo RUTA_JS; ?>/clubs/members.js"></script>
+
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script type="text/javascript" src="<?php echo RUTA_JS; ?>/adminlte/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="<?php echo RUTA_JS; ?>/adminlte/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#example').DataTable();
+	} );
+</script>

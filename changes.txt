@@ -1,0 +1,9 @@
+**** database
+
+Table: users
+	- add two inputs: type_account and parent_account
+	- the password is now null
+
+
+
+**** Plaform

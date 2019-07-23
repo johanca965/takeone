@@ -23,7 +23,7 @@ class Auth extends Model
 		// variable para declarar el nombre de la tabla al cual pertenece
 		$this->table = "users";
 		// llenamos la variable que contiene 
-		$this->fillable = [ "name", "slug", "username", "password", "email_verified_at", "role_id", "photo", "online", "created_at", "updated_at" ];
+		$this->fillable = [ "name", "slug", "username", "password", "email_verified_at", "role_id", "photo", "online", "type_account", "parent_account", "created_at", "updated_at" ];
 		// llenamos la variable que conteniene los datos que no queremos dejar ver
 		$this->hidden = [ "password" ];
 		// iniciamos la sesion para que puedan acceder a los datos del usuario cuando se haga login
@@ -160,7 +160,7 @@ class Auth extends Model
 			// obtenemos la plantilla para enviar
 			$template = RecoverpasswordTemplate::template( $user['name'], $password );
 			// enviamos el correo y lo capturamos
-			$send = SendMailTrait::send( SMTP_ADDRESS, $user['name'], $template, '', $email );
+			$send = SendMailTrait::send( SMTP_ADDRESS, $user['name'], $template, '', $email, "Password recovery" );
 			// validamos si el mensaje se envio
 			if( !$send )
 				// retornamos mensaje de error

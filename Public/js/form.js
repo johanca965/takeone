@@ -191,7 +191,6 @@ $(document).ready(function() {
 				toastr.info("Updating record...");
 			},
 			success: function(data) {
-				console.log(data);
 				if( data === 'true' )
 				{
 					toastr.success("Successfully updated registration.");

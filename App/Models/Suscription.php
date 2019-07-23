@@ -19,6 +19,13 @@ class Suscription extends Model
 	}
 
 	// función para almacenar un registro
+	public function all( $input = "id", $order = "asc" )
+	{
+		// ejecutamos la consulta
+		return parent::all( $input, $order );
+	}
+
+	// función para almacenar un registro
 	public function store( $request )
 	{
 		// ejecutamos la consulta
@@ -57,8 +64,29 @@ class Suscription extends Model
 	public function findByMemberID( $member_id )
 	{
 		// ejecutamos la consulta
-		return parent::simple( ' SELECT * FROM  ' . $this->table . ' WHERE member_id = "'.$member_id.'" and state = "approval" ORDER BY t1.created_at DESC ' );
+		return parent::simple( ' SELECT * FROM  ' . $this->table . ' WHERE member_id = "'.$member_id.'" and state = "approval" ORDER BY created_at DESC ' );
 	}	
+
+	// función para buscar la última suscripción por miembro
+	public function findLastByMemberID( $member_id )
+	{
+		// ejecutamos la consulta
+		return parent::simple( ' SELECT * FROM  ' . $this->table . ' WHERE member_id = "'.$member_id.'" ORDER BY created_at DESC ' );
+	}	
+
+	// función para buscar la última suscripción por miembro
+	public function getAllByMemberID( $member_id )
+	{
+		// ejecutamos la consulta
+		return parent::simple( ' SELECT * FROM  ' . $this->table . ' WHERE member_id = "'.$member_id.'" ORDER BY created_at DESC ' );
+	}	
+
+	// función para buscar la última suscripción por miembro
+	public function getLastByMemberID( $member_id )
+	{
+		// ejecutamos la consulta
+		return parent::simple( ' SELECT * FROM  ' . $this->table . ' WHERE member_id = "'.$member_id.'" ORDER BY created_at DESC limit 1 ' );
+	}
 
 	// función para listar los registros
 	public function findByClubUserIDDate( $club_id, $member_id, $date )

@@ -11,7 +11,7 @@ class User extends Model
 		// variable para declarar el nombre de la tabla al cual pertenece
 		$this->table = "users";
 		// llenamos la variable que contiene los datos que se pueden registrar en masa 
-		$this->fillable = [ "name", "slug", "username", "password", "email_verified_at", "role_id", "photo", "online", "created_at", "updated_at" ];
+		$this->fillable = [ "name", "slug", "username", "password", "email_verified_at", "role_id", "photo", "online", "type_account", "parent_account", "created_at", "updated_at" ];
 		// variable que contiene los campos que no queremos dejar ver
 		$this->hidden = [ "password" ];
 	}
@@ -31,6 +31,10 @@ class User extends Model
 	public function photo(){ return $this->findUser()['photo']; }
 
 	public function online(){ return $this->findUser()['online']; }
+
+	public function type_account(){ return $this->findUser()['type_account']; }
+
+	public function parent_account(){ return $this->findUser()['parent_account']; }
 
 	public function created_at(){ return $this->findUser()['created_at']; }
 
@@ -75,6 +79,20 @@ class User extends Model
 	{
 		// ejecutamos la consulta
 		return parent::simple(" SELECT * FROM " . $this->table ." WHERE slug = '".$slug."' ");
+	}
+
+	// función para almacenar un registro
+	public function findByNameAndUsername( $name, $username )
+	{
+		// ejecutamos la consulta
+		return parent::simple(" SELECT * FROM " . $this->table ." WHERE name = '".$name."' and username = '".$username."' ");
+	}
+
+	// función para almacenar un registro
+	public function findByUsername( $username )
+	{
+		// ejecutamos la consulta
+		return parent::simple(" SELECT * FROM " . $this->table ." WHERE username = '".$username."' ");
 	}
 
 }

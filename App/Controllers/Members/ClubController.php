@@ -55,6 +55,12 @@ class ClubController extends Controller
 		$this->view('Members/Clubs/create', ['countries' => $this->countryModel->listSimple() ] );
 	}
 
+	// función para mostrar los terminos y condiciones al crear un club
+	public function terms_conditions()
+	{
+		$this->view('Members/Clubs/terms_conditions');
+	}
+
 	// función para mostrar los datos del club
 	public function information( $slug )
 	{

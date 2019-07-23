@@ -26,6 +26,13 @@ class Club extends Model
 	}
 
 	// función para almacenar un registro
+	public function all( $input = "created_at", $order = "asc" )
+	{
+		// ejecutamos la consulta
+		return parent::all( $input, $order );
+	}
+
+	// función para almacenar un registro
 	public function store( $request )
 	{
 		// ejecutamos la consulta

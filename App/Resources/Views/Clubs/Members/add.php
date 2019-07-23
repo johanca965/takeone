@@ -72,6 +72,18 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 								<input type="text" class="form-control validate_crop_image" id="city" name="city" placeholder="City" value="" required>
 							</div>
 						</div>
+						<div class="col-12 col-md-6">
+							<div class="form-group">
+								<label for="mobile">Mobile</label>
+								<input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile" value="">
+							</div>
+						</div>
+						<div class="col-12 col-md-6">
+							<div class="form-group">
+								<label for="cpr">Cpr</label>
+								<input type="text" class="form-control" id="cpr" name="cpr" placeholder="Cpr" value="">
+							</div>
+						</div>
 					</div>
 					<div class="row">
 						<div class="col-xs-12">
@@ -90,7 +102,7 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 							<img src="'.RUTA_IMG.'/schedule/'.$clubpackage['slug'].'/'.$clubpackage['picture'].'" width="50" height="50" style="border-radius: 50%; margin-right: 5px; top: 10px; display: block; position: absolute; left: 50%; transform: translate(-50%);">
 							<span style="">'.$clubpackage['title'].'</span>
 							<p style="font-weight: normal; font-size: 12px; margin: 0;">'.$clubpackage['min_age'].' - '.$clubpackage['max_age'].' years</p>
-							<p style="font-weight: normal; font-size: 12px; margin: 0;">$'.$clubpackage['price'].' '.$params['club']['currency'].'</p>
+							<p style="font-weight: normal; font-size: 12px; margin: 0;">'.$clubpackage['price'].' '.$params['club']['currency'].'</p>
 							</label>
 							</div>
 							</div>
@@ -118,31 +130,31 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 </div>
 
 <div id="uploadimageModal" class="modal" role="dialog">
-  		<div class="modal-dialog">
-  			<div class="modal-content">
-  				<div class="modal-header">
-  					<button type="button" class="close" data-dismiss="modal">&times;</button>
-  					<h4>Upload and crop photo</h4>
-  				</div>
-  				<div class="modal-body">
-  					<div class="row">
-  						<div class="col-md-8 text-center">
-  							<div id="image_crop" style="width: 350px; height: 350px; margin-top: 30px;"></div>
-  						</div>
-  						<div class="col-md-4">
-  							<br>
-  							<br>
-  							<br>
-  							<button class="btn btn-success crop_button" data-action="<?php echo RUTA_URL; ?>/Invitation/uploadPhoto">Crop</button>
-  						</div>
-  					</div>
-  				</div>
-  				<div class="modal-footer">
-  					<button type="button" class="close" data-dismiss="modal">Close</button>
-  				</div>
-  			</div>
-  		</div>
-  	</div>
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4>Upload and crop photo</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-8 text-center">
+						<div id="image_crop" style="width: 350px; height: 350px; margin-top: 30px;"></div>
+					</div>
+					<div class="col-md-4">
+						<br>
+						<br>
+						<br>
+						<button class="btn btn-success crop_button" data-action="<?php echo RUTA_URL; ?>/Invitation/uploadPhoto">Crop</button>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="close" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
 
 <?php 
 require_once RUTA_RESOURCES."/Templates/adminlte/footer.php";
