@@ -48,7 +48,7 @@ class MemberController extends Controller
 				// mostramos mensaje de error
 				$msg = "You are not part of the club.";
 			// validamos si el miembro no ha sido bloqueado
-			else if( $member["active"] == 1 )
+			else if( $member["active"] == 1 or $member["active"] == 3 )
 				// mostramos mensaje de error
 				$msg = "You have been blocked by the club.";
 			else
