@@ -17,6 +17,7 @@ class Clubnotification extends Model
 		//// 3: suscription expired
 		//// 4: birthday members of month
 		//// 5: stock empty
+		//// 6: suscription canceled/holded
 		$this->fillable = [ 
 			"club_id", "importance", "section", "section_id", "created_at", "updated_at"
 		];

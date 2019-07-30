@@ -123,22 +123,22 @@ class Member extends Model
 
 	public function listingByClubAccepted( $club_id )
 	{
-		return parent::simple(' SELECT t1.*, t3.name, t3.slug, t3.photo FROM ' . $this->table . ' t1 INNER JOIN clubs t2 on t1.club_id = t2.id INNER JOIN users t3 ON t1.user_id = t3.id WHERE t1.club_id LIKE "%' . $club_id . '%" and t1.accepted = "2" and t1.active = "2" order by t1.accepted desc');
+		return parent::simple(' SELECT t1.*, t3.name, t3.slug, t3.photo FROM ' . $this->table . ' t1 INNER JOIN clubs t2 on t1.club_id = t2.id INNER JOIN users t3 ON t1.user_id = t3.id WHERE t1.club_id = "' . $club_id . '" and t1.accepted = "2" and t1.active = "2" order by t1.accepted desc');
 	}
 
 	public function listingByClubBlocked( $club_id )
 	{
-		return parent::simple(' SELECT t1.*, t3.name, t3.slug, t3.photo FROM ' . $this->table . ' t1 INNER JOIN clubs t2 on t1.club_id = t2.id INNER JOIN users t3 ON t1.user_id = t3.id WHERE t1.club_id LIKE "%' . $club_id . '%" and t1.accepted = "2" and t1.active = "1" order by t1.accepted desc');
+		return parent::simple(' SELECT t1.*, t3.name, t3.slug, t3.photo FROM ' . $this->table . ' t1 INNER JOIN clubs t2 on t1.club_id = t2.id INNER JOIN users t3 ON t1.user_id = t3.id WHERE t1.club_id = "' . $club_id . '" and t1.accepted = "2" and t1.active = "1" or t1.active = "3" order by t1.accepted desc');
 	}
 
 	public function listingByClubNew( $club_id )
 	{
-		return parent::simple(' SELECT t1.*, t3.name, t3.slug, t3.photo FROM ' . $this->table . ' t1 INNER JOIN clubs t2 on t1.club_id = t2.id INNER JOIN users t3 ON t1.user_id = t3.id WHERE t1.club_id LIKE "%' . $club_id . '%" and t1.accepted = "1" order by t1.accepted desc');
+		return parent::simple(' SELECT t1.*, t3.name, t3.slug, t3.photo FROM ' . $this->table . ' t1 INNER JOIN clubs t2 on t1.club_id = t2.id INNER JOIN users t3 ON t1.user_id = t3.id WHERE t1.club_id = "' . $club_id . '" and t1.accepted = "1" order by t1.accepted desc');
 	}
 
 	public function listingByClubDelete( $club_id )
 	{
-		return parent::simple(' SELECT t1.*, t3.name, t3.slug, t3.photo FROM ' . $this->table . ' t1 INNER JOIN clubs t2 on t1.club_id = t2.id INNER JOIN users t3 ON t1.user_id = t3.id WHERE t1.club_id LIKE "%' . $club_id . '%" and t1.accepted = "4" order by t1.accepted desc');
+		return parent::simple(' SELECT t1.*, t3.name, t3.slug, t3.photo FROM ' . $this->table . ' t1 INNER JOIN clubs t2 on t1.club_id = t2.id INNER JOIN users t3 ON t1.user_id = t3.id WHERE t1.club_id = "' . $club_id . '" and t1.accepted = "4" order by t1.accepted desc');
 	}
 
 	public function newMembersWithClub( $club_id )

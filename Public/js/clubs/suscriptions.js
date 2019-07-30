@@ -37,7 +37,7 @@ $(document).ready(function() {
 
 	$(".form-payment").click(function(){
 		$("#errors-payment").html('');
-		var form = $("#form-create");
+		var form = $("#form-payment");
 		var url = form.attr('action');
 		$.ajax({
 			url: url,

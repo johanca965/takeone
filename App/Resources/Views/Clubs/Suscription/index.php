@@ -88,7 +88,7 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 	<div class="modal-dialog modal-dialog-centered modal-sm modal-notify" role="document">
 		<!--Content-->
 		<div class="modal-content text-center">
-			<form id="form-create" method="post" action="<?php echo RUTA_URL; ?>/Clubs/Suscription/payment" autcomplete="off">
+			<form id="form-payment" method="post" action="<?php echo RUTA_URL; ?>/Clubs/Suscription/payment" autcomplete="off">
 				<?php echo $this->csrfToken(); ?>
 				<!--Header-->
 				<div class="modal-header bg-danger d-flex justify-content-center">

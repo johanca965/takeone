@@ -119,6 +119,7 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 					<table id="example" class="table table-bordered" style="width:100%">
 						<thead>
 							<tr>
+								<th>Code</th>
 								<th>State</th>
 								<th>Packages</th>
 								<th>Record date</th>
@@ -157,6 +158,7 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 									}
 									echo '
 										<tr class="'.$bg.'">
+											<td style="vertical-align: middle;">'.$suscriptions['id'].'</td>
 											<td style="vertical-align: middle;">'.ucfirst( $suscriptions['state'] ).'</td>
 											<td style="vertical-align: middle;">'.$this->find_packages_by_suscription_id( $suscriptions['id'], $suscriptions['price'] ).'</td>
 											<td style="vertical-align: middle;">'.$this->convertDateAll( $suscriptions['created_at'] ).'</td>
@@ -181,6 +183,7 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 						</tbody>
 						<tfoot>
 							<tr>
+								<th>Code</th>
 								<th>State</th>
 								<th>Packages</th>
 								<th>Record date</th>
@@ -229,6 +232,37 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 					<a type="button" class="btn  btn-danger waves-effect" data-dismiss="modal">No</a>
 				</div>
 			</form>
+		</div>
+		<!--/.Content-->
+	</div>
+</div>
+
+
+<div class="modal fade" id="modalBlock" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-sm modal-notify" role="document">
+		<!--Content-->
+		<div class="modal-content text-center">
+			<!--Header-->
+			<div class="modal-header bg-danger d-flex justify-content-center">
+				<p class="heading">Are you sure to block the member?</p>
+			</div>
+
+			<!--Body-->
+			<div class="modal-body">
+				<p>In order to block the member you must select a subscription action:</p>
+
+				<div id="errors-edit" style="margin-top: 15px;"></div>
+
+				<div class="form-group" style="margin-top: 15px; display: flex; justify-content: center;">
+					<a href="#" data-member-id="<?php echo $params['member']['member_id']; ?>" data-url="<?php echo RUTA_URL; ?>/Clubs/Member/Active" data-active="3" class="btn btn-primary active_member" title="Keep subscription" style="margin-right: 15px;">Keep</a>
+					<a href="#" data-member-id="<?php echo $params['member']['member_id']; ?>" data-url="<?php echo RUTA_URL; ?>/Clubs/Member/Active" data-active="1" class="btn btn-primary active_member" title="Expire subscription">Expire</a>
+				</div>
+			</div>
+
+			<!--Footer-->
+			<div class="modal-footer flex-center">
+				<a type="button" class="btn  btn-danger waves-effect" data-dismiss="modal">No</a>
+			</div>
 		</div>
 		<!--/.Content-->
 	</div>

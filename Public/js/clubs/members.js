@@ -47,6 +47,7 @@ $(document).ready(function(){
 				toastr.info("Processing petition...");
 			},
 			success: function(data) {
+				console.log(data);
 				if( data == 'true' )
 				{
 					toastr.success("Petition processed.");

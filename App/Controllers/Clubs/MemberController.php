@@ -187,6 +187,8 @@ class MemberController extends Controller
 			// evitamos que siga la función
 			return;
 		}
+		// buscamos los datos del miembro antes del cambio
+		$member = mysqli_fetch_assoc( $this->memberModel->find( $_POST['member_id'] ) );
 		// creamos el request con los datos necesarios
 		$request = [
 			'id' => $_POST['member_id'],
@@ -205,6 +207,126 @@ class MemberController extends Controller
 		}
 		else
 		{
+			// buscamos los datos del club
+			$club = mysqli_fetch_assoc( $this->clubModel->findByUserID( $this->Auth()->user()->id() ) );
+			// buscamos la última suscripción del miembro
+			$last_suscription = mysqli_fetch_assoc( $this->suscriptionModel->findLastByMemberID( $_POST['member_id'] ) );
+			// validamos si no es para desbloquear el usuario
+			if( $_POST['active'] != 2 )
+			{
+				// creamos vector que contiene los datos de la suscripción
+				$request = [
+					'id' => $last_suscription['id'],
+					'update_at' => date('Y-m-d H:i:s'),
+				];
+				// validamos si se mantiene la suscripcion o se cancela
+				if( $_POST['active'] == 1 )
+				{
+					$request['observation'] = "The subscription has been canceled due to member blocking.";
+					$request['state'] = 'canceled';
+				}
+				else
+				{
+					$request['observation'] = "The subscription has been holded to the member blocked.";
+					$request['state'] = 'hold';
+				}
+				// realizamos la petición
+				$result = $this->suscriptionModel->update( $request );
+				// validamos si existe error
+				if( !$result )
+				{
+					// agregamos el mensaje de error
+					array_push( $this->errors, $result );
+					// mostramos el mensaje de error
+					echo $this->errors();
+				}
+				else
+				{
+					// obtenemos los datos de la notificación de la suscripcion
+					$notificacion = mysqli_fetch_assoc( $this->clubnotificationModel->findByClubIdandSectionandSectionId( $club["id"], "suscription", $last_suscription["id"] ) );
+					// creamos el request con los datos a guardar
+					$request = [
+						"id" => $notificacion["id"],
+						"importance" => "6",
+						"updated_at" => date('Y-m-d H:i:s'),
+					];
+					// creamos la función para actualizar los datos
+					$this->clubnotificationModel->update( $request );
+				}
+			}
+			else
+			{
+				// validamos si la suscripción fue retenida
+				if ( $member["active"] == 3 ) 
+				{
+					// creamos vector que contiene los datos de la suscripción
+					$request = [
+						'id' => $last_suscription['id'],
+						'observation' => "NULL",
+						'state' => 'approval',
+						'update_at' => date('Y-m-d H:i:s'),
+					];
+					// realizamos la petición
+					$result = $this->suscriptionModel->update( $request );
+					// validamos si existe error
+					if( !$result )
+					{
+						// agregamos el mensaje de error
+						array_push( $this->errors, $result );
+						// mostramos el mensaje de error
+						echo $this->errors();
+						exit();
+					}
+					else
+					{
+						// obtenemos la cantidad de días de diferencia
+						$cant_days = $this->diferenciaDias( $last_suscription["created_at"], date("Y-m-d") );
+						// validamos que la fecha de la suscripción tenga una diferencia mayor o igual a 30 días
+						if( $cant_days >= 30 )
+						{
+							// creamos el request con los datos a guardar
+							$request = [
+								"id" => $last_suscription["id"],
+								"state" => "expired",
+								"updated_at" => date('Y-m-d H:i:s'),
+							];
+							// creamos la función para actualizar los datos
+							$this->suscriptionModel->update( $request );
+							// obtenemos los datos de la notificación de la suscripcion
+							$notificacion = mysqli_fetch_assoc( $this->clubnotificationModel->findByClubIdandSectionandSectionId( $club["id"], "suscription", $last_suscription["id"] ) );
+							// creamos el request con los datos a guardar
+							$request = [
+								"id" => $notificacion["id"],
+								"importance" => "3",
+								"updated_at" => date('Y-m-d H:i:s'),
+							];
+							// creamos la función para actualizar los datos
+							$this->clubnotificationModel->update( $request );
+							// generamos una nueva suscripción
+							$this->generate_suscription( $club["id"], $member["id"] );
+						}
+						// validamos que la fecha de la suscripción tenga una diferencia mayor o igal a 27 para enviar un correo
+						if( $cant_days == 27 )
+						{
+							// obtenemos los datos del usuario
+							$user = mysqli_fetch_assoc( $this->userModel->find( $member["user_id"] ) );
+							// importamos la libreria para enviar correos
+							require_once RUTA_APP."/Traits/SendMailTrait.php";
+							// importamos la plantilla
+							require_once RUTA_APP."/Helpers/EmailTemplates/SubscriptionreminderTemplate.php";
+							// instanciamos la pantilla
+							$template = SubscriptionreminderTemplate::template( $club['title'] );
+							// enviamos el correo
+							SendMailTrait::send( SMTP_ADDRESS, APP_NAME, $template, 'Subscription reminder', $user['username'], "Subscription reminder" );
+						}
+					}
+				}
+				else
+				{
+					// generamos una nueva suscripción
+					$this->generate_suscription( $club["id"], $member["id"] );
+				}
+			}
 			// creamos un array que contiene los datos a registrar
 			$request = [
 				'user_id' => $this->Auth()->user()->id(),
@@ -496,7 +618,7 @@ class MemberController extends Controller
 		}
 		else if( $accepted == 2 )
 		{
-			if( $active == 1 )
+			if( $active == 1 or  $active == 3 )
 			{
 				return '
 				<a href="#" data-member-id="'.$member_id.'" data-url="'.RUTA_URL.'/Clubs/Member/Accepted" data-accepted="4" class="btn btn-danger accepted_member" title="Release member">Release</a>
@@ -507,8 +629,10 @@ class MemberController extends Controller
 			{
 				return '
 				<a href="#" data-member-id="'.$member_id.'" data-url="'.RUTA_URL.'/Clubs/Member/Accepted" data-accepted="4" class="btn btn-danger accepted_member" title="Release member">Release</a>
-				<a href="#" data-member-id="'.$member_id.'" data-url="'.RUTA_URL.'/Clubs/Member/Active" data-active="1" class="btn btn-danger active_member" title="Block member">Block</a>
+				<a href="#" class="btn btn-danger btn_block_modal" data-toggle="modal" data-target="#modalBlock" data-member-id="'.$member_id.'">Block</a>
 				';
+
+				
 			}
 		}
 		else
@@ -552,6 +676,83 @@ class MemberController extends Controller
 			// retornamos los paquetes
 			return $package_title;
 		}
+	}
+
+	// función para generar una nueva suscripción
+	public function generate_suscription( $club_id, $member_id )
+	{
+		// buscamos los paquetes del miembro
+		$packages = $this->memberpackageModel->findByMemberID( $member_id );
+		// variable que contendra el total de la suscripción
+		$total = 0;
+		// validamos si existe un registro
+		if( $packages && $packages->num_rows > 0 )
+		{
+			// recorremos todos los packetes encontrados para emprezar a validar
+			foreach ($packages as $package)
+			{
+				// obtenemos los datos del paquete
+				$clubpackage = mysqli_fetch_assoc( $this->clubpackageModel->find( $package["id"] ) );
+				// validamos si existe un registro
+				if( $clubpackage && !empty( $clubpackage["id"] ) )
+				{
+					// guardamos los ids de los paquetes para luego ser registrados
+					$packages_ids[] = $clubpackage;
+					// obtenemos el total de los paquetes
+					$total += $clubpackage["price"];
+				}
+			}
+			
+		}
+		// validamos si el total es mayor a 0 para crear la nueva suscripcion
+		if( $total > 0 )
+		{
+			// creamos la notificación de nuevo miembro
+			$time = date('Y-m-d H:i:s');
+			// creamos el request con los datos a guardar
+			$request = [
+				"club_id" => $club_id,
+				"member_id" => $member_id,
+				"price" => $total,
+				"total_discount" => 0,
+				"payment_method" => "cash",
+				"state" => "approval",
+				"created_at" => $time,
+				"updated_at" => $time,
+			];
+			// creamos la función para guardar los datos
+			$result = $this->suscriptionModel->store( $request );
+			// validamos que se ejecute bien
+			if( $result )
+			{
+				// obtenemos los datos de la suscripción
+				$suscription = mysqli_fetch_assoc( $this->suscriptionModel->findByClubUserIDDate( $club_id, $member_id, $time ) );
+				// recorremos los paquetes de donde se calculo el total
+				foreach ($packages_ids as $package) 
+				{
+					// creamos la notificación de nuevo miembro
+					$request = [
+						'suscription_id' => $suscription['id'],
+						'package_id' => $package['id'],
+						'created_at' => date('Y-m-d H:i:s')
+					];
+					// creamos la nueva notificacion
+					$this->suscriptionpackageModel->store( $request );
+				}
+				// creamos la notificación de nuevo miembro
+				$request = [
+					'club_id' => $club_id,
+					'importance' => '2',
+					'section' => 'suscription',
+					'section_id' => $suscription['id'],
+					'created_at' => date('Y-m-d H:i:s'),
+					'updated_at' => date('Y-m-d H:i:s')
+				];
+				// creamos la nueva notificacion
+				$this->clubnotificationModel->store( $request );
+			}
+		}
+
 	}
 
 	// función para sumar 30 días a la fecha
@@ -614,6 +815,16 @@ class MemberController extends Controller
 		// array para mostrar el mes en español
 		$meses = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
 		return $meses[ $fecha[1] - 1 ]. " ".$fecha[2];
+	}
+
+	// función para obtener la cantidad de días de diferencia entre dos fechas
+	public function diferenciaDias($inicio, $fin)
+	{
+	    $inicio = strtotime($inicio);
+	    $fin = strtotime($fin);
+	    $dif = $fin - $inicio;
+	    $diasFalt = (( ( $dif / 60 ) / 60 ) / 24);
+	    return ceil($diasFalt);
 	}
 
 }
