@@ -11,7 +11,7 @@ class User extends Model
 		// variable para declarar el nombre de la tabla al cual pertenece
 		$this->table = "users";
 		// llenamos la variable que contiene los datos que se pueden registrar en masa 
-		$this->fillable = [ "name", "slug", "username", "password", "email_verified_at", "role_id", "photo", "online", "type_account", "parent_account", "created_at", "updated_at" ];
+		$this->fillable = [ "name", "slug", "username", "telephone", "password", "account_verified_at", "role_id", "photo", "online", "type_account", "parent_account", "created_at", "updated_at" ];
 		// variable que contiene los campos que no queremos dejar ver
 		$this->hidden = [ "password" ];
 	}
@@ -24,7 +24,12 @@ class User extends Model
 
 	public function username(){ return $this->findUser()['username']; }
 
-	public function email_verified_at(){ return $this->findUser()['email_verified_at']; }
+	public function telephone(){ 
+		$tel_exp = explode('+', $this->findUser()['telephone']);
+		return $tel_exp[1]; 
+	}
+
+	public function account_verified_at(){ return $this->findUser()['account_verified_at']; }
 
 	public function role(){ return $this->findUser()['role_id']; }
 

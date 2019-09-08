@@ -45,10 +45,10 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 							</div>
 						</div>
 						<div class="box-body" style="padding: 2rem;">
-							<div id="errors-create">
+							<div id="errors-create-2">
 								<?php echo $this->errors(); ?>
 							</div>
-							<form id="form-create" method="post" action="<?php echo RUTA_URL; ?>/Clubs/Trainner/store" autcomplete="off">
+							<form id="form-create-2" method="post" action="<?php echo RUTA_URL; ?>/Clubs/Trainner/store" autcomplete="off">
 								<?php echo $this->csrfToken(); ?>
 								<div class="col-12 col-md-6">
 									<div class="form-group">
@@ -166,9 +166,7 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 </div>
 
 
-<?php 
-require_once RUTA_RESOURCES."/Templates/adminlte/footer.php";
-?>
+<?php require_once RUTA_RESOURCES."/Templates/adminlte/footer.php"; ?>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 <script type="text/javascript">
@@ -200,9 +198,9 @@ require_once RUTA_RESOURCES."/Templates/adminlte/footer.php";
 				},
 				error: function(xhr) {
 					toastr.error("An error has occurred.");
-			    // console.log(xhr.statusText + xhr.responseText);
-			},
-		});
+			    	// console.log(xhr.statusText + xhr.responseText);
+			    },
+			});
 			return false;
 		});	
 	});

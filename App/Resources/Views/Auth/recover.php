@@ -24,7 +24,6 @@ require_once RUTA_RESOURCES."/Templates/Login/header.php";
 							<div class="col-12">
 								<div class="md-form">
 									<input type="email" id="email" name="email" class="form-control" title="Email" placeholder="Email">
-									<label for="username">Email</label>
 								</div>
 							</div>
 						</div>

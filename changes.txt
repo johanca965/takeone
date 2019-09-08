@@ -1,9 +1,69 @@
 **** database
 
 Table: users
-	- add two inputs: type_account and parent_account
-	- the password is now null
+	- add one input: telephone
+
+
+**** App
+
+	- Auth
+		auth.php
+
+	- Controllers
+		- Api
+			- App
+				- AuthController.php
+		- Members
+			- UserController.php
+
+		- AuthController.php
+
+	- Models = [ user ]
+
+	- Templates
+		- adminlte
+			- header.php
+
+	- Views
+		- Auth
+			- login.php
+			- sign_up.php
+		- Members
+			- User
+				profile.php
+
+**** Public
+	-js
+		-mailverifyaccount.js
 
 
 
-**** Plaform
+
+
+
+
+
+------------------------------------------------------------------------------------------
+
+auth/login y sign_up
+
+templates/headers
+
+controller/authcontroller
+
+controller/members/usercontroller
+controller/clubs/membercontroller
+
+
+view/member/profile
+view/clubs/members/add
+view/clubs/members/see
+view/invitations
+view/club/member/add
+
+
+suscriptionpackage
+suscription
+
+add js, css and img
+form.js

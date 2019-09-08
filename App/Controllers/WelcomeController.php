@@ -14,6 +14,8 @@ class WelcomeController extends Controller
 
 	public function index()
 	{	
+		$this->Auth();
+		// $this->Auth()->logout();
 		switch ( $this->Auth()->user()->role() ) {
 			case 1:
 			$this->location('Members/Welcome');

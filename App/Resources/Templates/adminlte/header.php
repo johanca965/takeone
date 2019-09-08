@@ -54,6 +54,7 @@
 </head>
 
 <body class="hold-transition skin-red sidebar-mini">
+    <input type="hidden" id="ruta_url" value="<?php echo RUTA_URL; ?>">
 
     <?php 
     if( isset( $_SESSION['id'] ) && !empty( $_SESSION['id'] ) ){
@@ -414,20 +415,65 @@
 
   		<!-- Content Wrapper. Contains page content -->
   		<div class="content-wrapper">
-            <?php if( $this->Auth()->user()->email_verified_at() == "0000-00-00 00:00:00" or $this->Auth()->user()->email_verified_at() == NULL ){ ?>
-             <!-- Content Header (Page header) -->
-             <section class="content-header verify-account">
-              <div class="alert alert-danger">
-                <strong>Warning!</strong> Your account has not yet been verified, please check your email.
-                <a href="<?php echo RUTA_URL; ?>/Auth/newSendMailVerify" class="new-verify-account" title="Clic for to request new verification email">
-                    Request new verification email
-                </a>.
-                <a href="" class="pull-right close-verify-account">
-                    <i class="fa fa-times"></i>
-                </a>
-            </div>
-        </section>
-    <?php } ?>
+            <?php
+                if( $this->Auth()->user()->account_verified_at() == "0000-00-00 00:00:00" or $this->Auth()->user()->account_verified_at() == NULL )
+                    if( !empty( $this->Auth()->user()->username() ) && !empty( $this->Auth()->user()->telephone() ) ) 
+                    {
+                        echo 
+                        '
+                        <!-- Content Header (Page header) -->
+                        <section class="content-header verify-account">
+                            <div class="alert alert-danger">
+                                <strong>Warning!</strong> Your account has not yet been verified, please check your email.
+                                <a href="'.RUTA_URL.'/Auth/newSendMailVerify" class="new-verify-account" title="Clic for to request new verification email">
+                                    Request new verification email
+                                </a> or <a href="#" class="new-verify-account-mobile" title="Clic for to request new code verification mobile sms" data-telephone="'.$this->Auth()->user()->telephone().'" data-url="'.RUTA_URL.'/Auth/send_code_verification_mobile_sms">
+                                    Request new code verification mobile sms
+                                </a>.
+                                <a href="" class="pull-right close-verify-account">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </section>
+                        ';
+                    }
+                    else if( !empty( $this->Auth()->user()->username() ) ) 
+                    {
+                        echo 
+                        '
+                        <!-- Content Header (Page header) -->
+                        <section class="content-header verify-account">
+                            <div class="alert alert-danger">
+                                <strong>Warning!</strong> Your account has not yet been verified, please check your email.
+                                <a href="'.RUTA_URL.'/Auth/newSendMailVerify" class="new-verify-account" title="Clic for to request new verification email">
+                                    Request new verification email
+                                </a>.
+                                <a href="" class="pull-right close-verify-account">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </section>
+                        ';
+                    }
+                    else
+                    {
+                        echo 
+                        '
+                        <!-- Content Header (Page header) -->
+                        <section class="content-header verify-account">
+                            <div class="alert alert-danger">
+                                <strong>Warning!</strong> Your account has not yet been verified, please check your mobile sms.
+                                <a href="#" class="new-verify-account-mobile" title="Clic for to request new code verification mobile sms" data-telephone="'.$this->Auth()->user()->telephone().'" data-url="'.RUTA_URL.'/Auth/send_code_verification_mobile_sms">
+                                    Request new verification mobile sms
+                                </a>.
+                                <a href="" class="pull-right close-verify-account">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </section>
+                        ';
+                    }
+            ?>
 
     <!-- model for the change to the parent account -->
     <div class="modal fade" id="modalChangeParentAccount" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -453,6 +499,40 @@
                     <!--Footer-->
                     <div class="modal-footer flex-center">
                         <button type="submit" id="btn-form-change-to-father-account" data-url="<?php echo RUTA_URL; ?>/Members/User/Chante-to-father-account" class="btn btn-primary">Yes</button>
+                        <a type="button" class="btn  btn-danger waves-effect" data-dismiss="modal">No</a>
+                    </div>
+                </form>
+            </div>
+            <!--/.Content-->
+        </div>
+    </div>
+
+    <!-- model for account verify mobile sms -->
+    <div class="modal fade" id="modalAccountVerifyMobile" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm modal-notify" role="document">
+            <!--Content-->
+            <div class="modal-content text-center">
+                <form id="form-verify-account-mobile" method="get" action="<?php echo RUTA_URL; ?>/Auth/Verify-sms" autcomplete="off" data-url-validate="<?php echo RUTA_URL; ?>/Auth/Validate-sms">
+                    <!--Header-->
+                    <div class="modal-header bg-danger d-flex justify-content-center">
+                        <p class="heading">Mobile verification</p>
+                    </div>
+
+                    <!--Body-->
+                    <div class="modal-body">
+                        <i class="fa fa-mobile-alt fa-4x animated rotateIn"></i>
+                        <div style="margin-top: 15px;">
+                            <div class="form-group" style="margin-top: 15px;">
+                                <input type="text" pattern="\d*" class="form-control text-center" id="code_verification_mobile_sms" name="code" maxlength="6" placeholder="888888" style="letter-spacing: 5px; font-size: 20px; margin-bottom: 15px;">
+                                <?php echo '<a href="#" class="new-verify-account-mobile try-again" title="Clic for to request new code verification mobile sms" data-telephone="'.$this->Auth()->user()->telephone().'" data-url="'.RUTA_URL.'/Auth/send_code_verification_mobile_sms" style="display: none; margin-top: 15px;">
+                                    Request new code verification mobile sms</a>'; ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Footer-->
+                    <div class="modal-footer flex-center">
+                        <button type="submit" class="btn btn-primary waves-effect">Yes</button>
                         <a type="button" class="btn  btn-danger waves-effect" data-dismiss="modal">No</a>
                     </div>
                 </form>

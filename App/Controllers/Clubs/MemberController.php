@@ -53,10 +53,19 @@ class MemberController extends Controller
 		$club = mysqli_fetch_assoc( $this->clubModel->findByUserID( $this->Auth()->user()->id() ) );
 		$user = mysqli_fetch_assoc( $this->userModel->findBySlug( $slug ) );
 		$member = mysqli_fetch_assoc( $this->memberModel->findMemberWithClub( $club['id'], $user['id'] ) );
+		$member_packages = $this->memberpackageModel->findByMemberID( $member['member_id'] );
+		$total_price_packages = 0;
+		foreach ($member_packages as $member_package) 
+		{
+			$total_price_packages += $member_package['price'];
+		}
 		$params = [
 			'member' => $member,
 			'club' => $club,
+			'member_packages' => $member_packages,
+			'total_price_packages' => $total_price_packages,
 			'suscriptions' => $this->suscriptionModel->getAllByMemberID( $member['member_id'] ),
+			'clubpackages' => $this->clubpackageModel->findByCludID( $club['id'] ),
 			'breadcrumb_data' => '
 				<li>
                     <a title="List members" href="'.RUTA_URL.'/Clubs/Member/">
@@ -346,10 +355,24 @@ class MemberController extends Controller
 	// función registrar un nuevo miembro
 	public function registermember()
 	{
+		// validamos que sea una peticion por post
+		$this->methodPost();
+		// buscamos si existe el "-" en la busqueda
+		$valide_guion = strpos($_POST['telephone'], "-");
+		// validamos que no exista
+		if( !$valide_guion && !empty($_POST['telephone']) )
+		{
+			// agregamos a las variables de error la respuesta del servidor
+			array_push($this->errors, "Please do not delete the '-' character from the phone number.");
+			// agregamos los errores obtenidos desde la peticion hecha al model
+			echo $this->errors();
+			return;
+		}
 		// validamos que existan los campos
 		$errors = $this->validate( $_POST, [
 			'name' => 'required',
-			'username' => 'required|unique:users',
+			'username' => 'unique:users',
+			'telephone' => 'unique:users',
 			'password' => 'required',
 			'photo' => 'required',
 			'country' => 'required',
@@ -372,10 +395,8 @@ class MemberController extends Controller
 			// evitamos que siga la función
 			return;
 		}
-		// validamos que sea una peticion por post
-		$this->methodPost();
 		// realizamos la peticion al modelo de cerrar sesion
-		$user = $this->register( $_POST['name'], $_POST['username'], $_POST['password'], $_POST['photo'], $_POST['country'] );
+		$user = $this->register( $_POST['name'], $_POST['username'], $_POST['telephone'], $_POST['password'], $_POST['photo'], $_POST['country'] );
 		$user = explode("|", $user);
 		// validamos si se logueo o no
 		if( $user[0] != 'true' )
@@ -490,7 +511,7 @@ class MemberController extends Controller
 	}
 
 	// funcion para registrar un usuario en la base de datos
-	public function register( $name, $username, $password, $photo, $country_id )
+	public function register( $name, $username, $telephone, $password, $photo, $country_id )
 	{
 		// encriptamos y protegemos la variable del password
 		$password = password_hash( $password , PASSWORD_BCRYPT);
@@ -499,6 +520,7 @@ class MemberController extends Controller
 			'name' => $name,
 			'slug' => SlugTrait::slug($name),
 			'username' => $username,
+			'telephone' => $telephone,
 			'password' => $password,
 			'email_verified_at' => date('Y-m-d H:i:s'),
 			'role_id' => "1",
@@ -519,7 +541,6 @@ class MemberController extends Controller
 		}
 		else
 		{
-
 			$user = mysqli_fetch_assoc( $this->userModel->findBySlug( SlugTrait::slug($name) ) );
 
 			// creamos la notificación de nuevo miembro
@@ -602,6 +623,69 @@ class MemberController extends Controller
 			echo "true";
 		}
 
+	}
+
+	public function update_packages()
+	{
+		$this->methodPost();
+		// obtenemos todas las suscripciones
+		$suscriptions = $this->suscriptionModel->getAllByMemberID( $_POST["member_id"] );
+		// recorremos las suscripciones
+		foreach ($suscriptions as $suscription) 
+		{
+			// validamos si existe una suscripcioón vencidad
+			if( $suscription['state'] == "expired" )
+			{
+				// retornamos un mensaje de error al usuario
+				array_push( $this->errors, "You cannot make the change, the member has expired subscriptions." );
+				// mostramos el error
+				echo $this->errors();
+				// evitamos que siga la función
+				exit();
+			}
+			else if(  $suscription['state'] == "approval" )
+			{
+				// eliminamos los paquetes de la suscripcion
+				$this->suscriptionpackageModel->deleteBySuscriptionId( $suscription['id'] );
+				// recorremos las suscripciones
+				foreach ($_POST['packages'] as $package) 
+				{
+					// creamos el request
+					$request = [
+						"suscription_id" => $suscription["id"],
+						"package_id" => $package["id"],
+						'created_at' => date('Y-m-d H:i:s')
+					];
+					// agregamos cada paquete
+					$this->suscriptionpackageModel->store( $request );
+				}
+				// creamos el request
+				$request = [
+					"id" => $suscription["id"],
+					"price" => $_POST["total"],
+					'updated_at' => date('Y-m-d H:i:s')
+				];
+				// actualizamos la suscripcion
+				$this->suscriptionModel->update( $request );
+				break;
+			}
+		}
+		// eliminamos los paquetes del miembro del lcub
+		$this->memberpackageModel->deleteByMemberId( $_POST["member_id"] );
+		// recorremos las suscripciones
+		foreach ($_POST['packages'] as $package) 
+		{
+			// creamos el request
+			$request = [
+				"member_id" => $_POST["member_id"],
+				"package_id" => $package["id"],
+				'created_at' => date('Y-m-d H:i:s'),
+				'updated_at' => date('Y-m-d H:i:s')
+			];
+			// agregamos cada paquete
+			$this->memberpackageModel->store( $request );
+		}
+		echo "true";
 	}
 
 

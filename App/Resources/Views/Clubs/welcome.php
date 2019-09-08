@@ -118,7 +118,6 @@ require_once RUTA_RESOURCES."/Templates/adminlte/footer.php";
 				toastr.info("Processing request...");
 			},
 			success: function(data) {
-				console.log(data);
 				data = data.split('-');
 				if( data[0] === 'true' )
 				{

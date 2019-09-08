@@ -58,4 +58,10 @@ class Suscriptionpackage extends Model
 		return parent::simple( ' SELECT t2.id, t2.title FROM  ' . $this->table . ' t1 INNER JOIN club_packages t2 ON t1.package_id = t2.id WHERE t1.suscription_id = "'.$suscription_id.'" ' );
 	}
 
+	public function deleteBySuscriptionId( $suscription_id )
+	{
+		// ejecutamos la consulta
+		return parent::simple( ' DELETE FROM  ' . $this->table . ' WHERE suscription_id = "'.$suscription_id.'" ' );
+	}
+
 }

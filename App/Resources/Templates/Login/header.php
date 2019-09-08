@@ -69,6 +69,8 @@
 </head>
 <body manifest="manifest.cache" class="grey lighten-3">
 
+    <input type="hidden" id="ruta_url" value="<?php echo RUTA_URL; ?>">
+
     <div class="container-fluid">
         <div class="row align-items-strecth">
             <div class="col-12 col-lg-6 side-left"></div>

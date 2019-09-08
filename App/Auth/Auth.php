@@ -23,7 +23,7 @@ class Auth extends Model
 		// variable para declarar el nombre de la tabla al cual pertenece
 		$this->table = "users";
 		// llenamos la variable que contiene 
-		$this->fillable = [ "name", "slug", "username", "password", "email_verified_at", "role_id", "photo", "online", "type_account", "parent_account", "created_at", "updated_at" ];
+		$this->fillable = [ "name", "slug", "username", "telephone", "password", "account_verified_at", "role_id", "photo", "online", "type_account", "parent_account", "created_at", "updated_at" ];
 		// llenamos la variable que conteniene los datos que no queremos dejar ver
 		$this->hidden = [ "password" ];
 		// iniciamos la sesion para que puedan acceder a los datos del usuario cuando se haga login
@@ -41,6 +41,20 @@ class Auth extends Model
 		// protegemos las variables para evitar el sql injection
 		$username = $this->protectVars( $username );
 		$password = $this->protectVars( $password );
+		// extraemos el primer caracter de la cadena
+		$country_code = substr($username, 0, 1);
+		// validamos si el primer caracter es un + para saber si es número de teléfono
+		if( $country_code == '+' )
+		{
+			// explotamos la cadena para eliminar el separador del código de país
+			$username_exp = explode('-', $username);
+			// validamos que sea un número de telefono
+			if(  is_numeric( $username_exp[1] ) )
+			{
+				// cambiamos el valor del campo de logueo
+				$this->username = "telephone";
+			}
+		}
 		// buscamos si existe el usuario en la base de datos
 		$result = $this->conex->query( ' SELECT ' . $this->selectInputs() . ' FROM ' . $this->table . ' WHERE ' . $this->username . ' = "' . $username .'" ' );
 		// contamos los registros obtenidos para saber si se encontro registros
@@ -103,7 +117,7 @@ class Auth extends Model
 	}
 
 	// funcion para registrar un usuario en la base de datos
-	public function register( $name, $username, $password, $photo, $country_id )
+	public function register( $name, $username, $telephone, $password, $photo, $country_id )
 	{
 		// protegemos el valor inicial de las variables
 		$username_logueo = $username;
@@ -111,10 +125,14 @@ class Auth extends Model
 		// protegemos las variables para evitar el sql injection
 		$name = $this->protectVars( $name );
 		$username = $this->protectVars( $username );
+		// validamos que sea un número de telefono y que no exista la variable telefono
+		if(  empty( $telephone ) )
+			// asignamos el número de telefono a NULL
+			$telephone = 'NULL';
 		// encriptamos y protegemos la variable del password
 		$password = password_hash( $this->protectVars( $password ) , PASSWORD_BCRYPT);
 		// ejecutamos el query de registo
-		$query = $this->conex->query( 'INSERT INTO ' . $this->table .' (name, slug, username, password, email_verified_at, role_id, photo, online, created_at, updated_at) VALUES ( "' . $name .'", "'.SlugTrait::slug($name).'", "' . $username .'", "' . $password .'", "0000-00-00 00:00:00", "1", "' . $photo .'", "1", "'.date('Y-m-d H:i:s').'", "'.date('Y-m-d H:i:s').'" ) ' );
+		$query = $this->conex->query( 'INSERT INTO ' . $this->table .' (name, slug, username, telephone, password, account_verified_at, role_id, photo, online, created_at, updated_at) VALUES ( "' . $name .'", "'.SlugTrait::slug($name).'", "' . $username .'", "' . $telephone .'", "' . $password .'", "0000-00-00 00:00:00", "1", "' . $photo .'", "1", "'.date('Y-m-d H:i:s').'", "'.date('Y-m-d H:i:s').'" ) ' );
 		// validamos que no exista ningun error en el registro
 		parent::validateError( $query );
 		// buscamos si existe el usuario en la base de datos

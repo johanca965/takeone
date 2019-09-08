@@ -1,6 +1,7 @@
 <?php 
 require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 ?>
+<link rel="stylesheet" type="text/css" href="<?php echo RUTA_CSS; ?>/intlTelInput.min.css">
 
 <div class="container-fluid container-form">
 	<div id="errors-edit">
@@ -22,19 +23,26 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 					<label for="name">Name (*)</label>
 					<input type="text" class="form-control" id="name" name="name" placeholder="Name" value="<?php echo ucwords( $params['user']['name'] ); ?>">
 				</div>
-			</div>
-			<div class="col-12 col-md-6">
-				<div class="form-group">
-					<label for="username">Email (*)</label>
-					<input type="text" class="form-control validate_crop_image" id="username" name="username" placeholder="Email" onlyread value="<?php echo $params['user']['username']; ?>">
-				</div>
-			</div>
+			</div>	
 			<div class="col-12 col-md-6">
 				<div class="form-group">
 					<label for="password">Password <span class="text-grey">(Enter the password only when it must be updated)</span></label>
 					<input type="password" class="form-control" id="password" name="password" placeholder="Password">
 				</div>
-			</div>					
+			</div>	
+			<div class="col-12 col-md-6">
+				<div class="form-group">
+					<label for="username">Email</label>
+					<input type="text" class="form-control validate_crop_image" id="username" name="username" placeholder="Email" onlyread value="<?php echo $params['user']['username']; ?>">
+				</div>
+			</div>
+			<div class="col-12 col-md-6">
+				<div class="form-group">
+					<label for="telephone" style="display: block;">Telephone</label>
+					<input type="text" class="form-control" name="telephone" id="telephone" style="display: block;" value="<?php echo $params['user']['telephone']; ?>">
+					<input type="hidden" class="form-control" name="telephone-replace" id="telephone-replace" style="display: block;" value="<?php echo $params['user']['telephone']; ?>">
+				</div>
+			</div>			
 			<div class="col-12 col-md-6">
 				<div class="form-group">
 					<label for="upload_photo">Photo</label>
@@ -153,8 +161,8 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 			</div>
 			<div class="col-12 col-md-6">
 				<div class="form-group">
-					<label for="mobile">Mobile</label>
-					<input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile" value="<?php echo $params['userdata']['mobile']; ?>">
+					<label for="mobile">Mobile optional</label>
+					<input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile optional" value="<?php echo $params['userdata']['mobile']; ?>">
 				</div>
 			</div>
 			<div class="col-12 col-md-12">
@@ -202,3 +210,25 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 require_once RUTA_RESOURCES."/Templates/adminlte/footer.php";
 ?>
 <script src="<?php echo RUTA_JS; ?>/crop_image.js" type="text/javascript"></script>
+<script src="<?php echo RUTA_JS; ?>/tel-input/intlTelInput.min.js" type="text/javascript"></script>
+<script src="<?php echo RUTA_JS; ?>/tel-input/script.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+	var input = document.querySelector("#telephone");
+	var ruta_url = document.querySelector("#ruta_url").value;
+	var iti = window.intlTelInput(input, {
+		utilsScript: ruta_url+"/js/tel-input/utils.js",
+		preferredCountries : ["bh", "us",  "co"],
+	});
+
+
+	$(document).ready(function() {
+		var telephone = $("#telephone-replace").val();
+		setTimeout(function(){
+			$("#telephone").attr("placeholder", telephone);
+			$("#telephone").val(telephone);
+		}, 100);
+	});
+
+	
+</script>

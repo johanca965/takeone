@@ -12,6 +12,7 @@
 	<link rel="stylesheet" href="<?php echo RUTA_CSS; ?>/style.css">
 	<link rel="stylesheet" href="<?php echo RUTA_CSS; ?>/members.css">
 	<link rel="stylesheet" href="<?php echo RUTA_CSS; ?>/croppie.css">
+  <link rel="stylesheet" type="text/css" href="<?php echo RUTA_CSS; ?>/intlTelInput.min.css">
 	<!-- AdminLTE Skins. We have chosen the skin-blue for this starter page. However, you can choose any other skin. Make sure you apply the skin class to the body tag so the changes take effect. -->
 	<link rel="stylesheet" href="<?php echo RUTA_CSS; ?>/adminlte/skins/skin-red.min.css">
 	<link rel="icon" type="image/ico" href="<?php echo RUTA_URL; ?>/favicon.ico">
@@ -51,7 +52,7 @@
 
   </head>
   <body style="background-color: #F1EFEF;" manifest="manifest.cache">
-
+    <input type="hidden" id="ruta_url" value="<?php echo RUTA_URL; ?>">
 
   	<div class="container">
   		<div class="row" style="justify-content: center; display: flex; margin-top: 5rem;">
@@ -102,28 +103,36 @@
   										<input type="text" class="form-control" name="name" id="name" placeholder="Name" required>
   									</div>
   								</div>
-  								<div class="col-xs-12 col-md-6">
-  									<div class="form-group">
-  										<label for="username">Email (*)</label>
-  										<input type="text" class="form-control validate_crop_image" id="username" name="username" placeholder="Email" value="" required>
-  									</div>
-  								</div>
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="form-group">
+                                        <label for="password">Password (*)</label>
+                                        <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                                    </div>
+                                </div>
   							</div>
   							<div class="row">
-  								<div class="col-xs-12 col-md-6">
-  									<div class="form-group">
-  										<label for="password">Password (*)</label>
-  										<input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-  									</div>
-  								</div>					
-  								<div class="col-xs-12 col-md-6">
-  									<div class="form-group">
-  										<label for="upload_photo">Photo(*)</label>
-  										<input type="file" name="upload_image" id="upload_image">
-  										<input type="hidden" class="input_crop_image" name="photo" id="photo" required>
-  									</div>
-  								</div>
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="form-group">
+                                        <label for="username">Email</label>
+                                        <input type="text" class="form-control validate_crop_image" id="username" name="username" placeholder="Email" value="" required>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="form-group">
+                                        <label for="username" style="display: block;">Telephone</label>
+                                        <input type="text" class="form-control" name="telephone" id="telephone" style="display: block;" value="">
+                                    </div>
+                                </div>	
   							</div>
+                            <div class="row">                                                
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="form-group">
+                                        <label for="upload_photo">Photo(*)</label>
+                                        <input type="file" name="upload_image" id="upload_image">
+                                        <input type="hidden" class="input_crop_image" name="photo" id="photo" required>
+                                    </div>
+                                </div>
+                            </div>
   							<div class="row">
   								<div class="col-xs-12">
   									<h3 style="color: red;">Personal information</h3>
@@ -355,8 +364,17 @@
   	<script type="text/javascript" src="<?php echo RUTA_JS; ?>/croppie.js"></script>
   	<script type="text/javascript" src="<?php echo RUTA_JS; ?>/crop_image.js"></script>
   	<script src="<?php echo RUTA_JS; ?>/crop_image.js" type="text/javascript"></script>
+    <script src="<?php echo RUTA_JS; ?>/tel-input/intlTelInput.min.js" type="text/javascript"></script>
+    <script src="<?php echo RUTA_JS; ?>/tel-input/script.js" type="text/javascript"></script>
   	<script>
   		new WOW().init();
+
+        var input = document.querySelector("#telephone");
+        var ruta_url = document.querySelector("#ruta_url").value;
+        var iti = window.intlTelInput(input, {
+            utilsScript: ruta_url+"/js/tel-input/utils.js",
+            preferredCountries : ["bh", "us",  "co"],
+        });
 
         $(".item_package").change(function(){
             var total = $("#total").val();

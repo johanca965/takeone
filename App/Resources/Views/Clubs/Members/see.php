@@ -108,7 +108,58 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 		<div class="col-xs-12">
 			<div class="box">
 				<div class="box-header">
-					<h3 class="box-title">Package</h3>
+					<h3 class="box-title">Packages: <span class="total_show"><?php echo $params['total_price_packages']; ?></span> <?php echo $params['club']['currency']; ?></h3>
+					<div class="pull-right">
+						<a href="<?php echo RUTA_URL; ?>/Clubs/Member/" class="btn btn-primary">
+							<i class="fa fa-list" style="margin-right: 5px;"></i> List
+						</a>
+					</div>
+				</div>
+				<div class="box-body" style="padding: 2rem;">
+					<form id="form-edit-2" method="post" action="<?php echo RUTA_URL; ?>/Clubs/Member/Update_packages" autcomplete="off">
+						<div id="errors-edit-2"></div>
+						<input type="hidden" name="total" id="total" value="<?php echo $params['total_price_packages']; ?>">
+						<input type="hidden" name="member_id" id="member_id" value="<?php echo $params['member']['member_id']; ?>">
+						<?php
+	                        $i = 1; 
+	                        foreach ($params['clubpackages'] as $clubpackage) 
+	                        {
+	                        	$background = '';
+	                        	$checked = '';
+	                        	foreach ($params['member_packages'] as $member_package) 
+	                        	{
+	                        		if( $clubpackage['id'] == $member_package['id']){
+	                        			$background = 'background-color: #DFD8D8;';
+	                        			$checked = "checked";
+	                        		}
+	                        	}
+	                        	echo '
+	                            	<div class="col-xs-6 col-md-4 col-lg-3">
+	                                	<div class="form-group">
+	                                    	<label for="packages_'.$i.'" style="text-align: center; width: 100%; padding:5px; padding-top: 70px; position: relative; '.$background.'">
+		                                        <input data-price="'.$clubpackage['price'].'" type="checkbox" id="packages_'.$i.'" name="packages[]" value="'.$clubpackage['id'].'" placeholder="packages" class="item_package" style="display: none;" '.$checked.'> 
+		                                        <img src="'.RUTA_IMG.'/schedule/'.$clubpackage['slug'].'/'.$clubpackage['picture'].'" width="50" height="50" style="border-radius: 50%; margin-right: 5px; top: 10px; display: block; position: absolute; left: 50%; transform: translate(-50%);">
+		                                        <span style="">'.$clubpackage['title'].'</span>
+		                                        <p style="font-weight: normal; font-size: 12px; margin: 0;">'.$clubpackage['min_age'].' - '.$clubpackage['max_age'].' years</p>
+		                                        <p style="font-weight: normal; font-size: 12px; margin: 0;">$'.$clubpackage['price'].' '.$params['club']['currency'].'</p>
+	                                        </label>
+	                                    </div>
+	                                </div>
+	                            ';
+	                            $i++;
+	                        }
+	                    ?>
+	                    <button type="submit" id="btn-update-rfid" class="btn btn-danger pull-right">Actualizar</button>
+	                </form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="box">
+				<div class="box-header">
+					<h3 class="box-title">Transactions</h3>
 					<div class="pull-right">
 						<a href="<?php echo RUTA_URL; ?>/Clubs/Member/" class="btn btn-primary">
 							<i class="fa fa-list" style="margin-right: 5px;"></i> List
@@ -280,5 +331,20 @@ require_once RUTA_RESOURCES."/Templates/adminlte/footer.php";
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('#example').DataTable();
+
+		$(".item_package").change(function(){
+            var total = $("#total").val();
+            if( $(this).prop('checked') ) 
+            {
+                total = parseFloat( $(this).data('price') ) + parseFloat( total );
+                $(this).parent('label').css('background-color', '#DFD8D8');
+            }else
+            {
+                total = parseFloat( total ) - parseFloat( $(this).data('price') );
+                $(this).parent('label').css('background-color', 'transparent');
+            }
+            $("#total").val( total );
+            $(".total_show").html( total );
+        });
 	} );
 </script>

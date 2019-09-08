@@ -1,6 +1,7 @@
 <?php 
 require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 ?>
+<link rel="stylesheet" type="text/css" href="<?php echo RUTA_CSS; ?>/intlTelInput.min.css">
 
 <div class="row" style="justify-content: center; display: flex; margin-top: 2rem;">
 	<div class="col-12 col-lg-11">
@@ -28,18 +29,24 @@ require_once RUTA_RESOURCES."/Templates/adminlte/header.php";
 						</div>
 						<div class="col-xs-12 col-md-6">
 							<div class="form-group">
-								<label for="username">Email (*)</label>
-								<input type="text" class="form-control validate_crop_image" id="username" name="username" placeholder="Email" value="" required>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-xs-12 col-md-6">
-							<div class="form-group">
 								<label for="password">Password (*)</label>
 								<input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
 							</div>
-						</div>					
+						</div>
+						<div class="col-xs-12 col-md-6">
+							<div class="form-group">
+								<label for="username">Email</label>
+								<input type="text" class="form-control validate_crop_image" id="username" name="username" placeholder="Email" value="">
+							</div>
+						</div>
+						<div class="col-12 col-md-6">
+							<div class="form-group">
+								<label for="telephone" style="display: block;">Telephone</label>
+								<input type="text" class="form-control" name="telephone" id="telephone" style="display: block;" value="">
+							</div>
+						</div>	
+					</div>
+					<div class="row">					
 						<div class="col-xs-12 col-md-6">
 							<div class="form-group">
 								<label for="upload_photo">Photo(*)</label>
@@ -161,6 +168,8 @@ require_once RUTA_RESOURCES."/Templates/adminlte/footer.php";
 ?>
 
 <script type="text/javascript" src="<?php echo RUTA_JS; ?>/crop_image.js"></script>
+<script src="<?php echo RUTA_JS; ?>/tel-input/intlTelInput.min.js" type="text/javascript"></script>
+<script src="<?php echo RUTA_JS; ?>/tel-input/script.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 	$(".item_package").change(function(){
@@ -176,6 +185,13 @@ require_once RUTA_RESOURCES."/Templates/adminlte/footer.php";
 		}
 		$("#total").val( total );
 		$(".total_show").html( total );
+	});
+
+	var input = document.querySelector("#telephone");
+	var ruta_url = document.querySelector("#ruta_url").value;
+	var iti = window.intlTelInput(input, {
+		utilsScript: ruta_url+"/js/tel-input/utils.js",
+		preferredCountries : ["bh", "us",  "co"],
 	});
 
 	$(document).ready(function() {

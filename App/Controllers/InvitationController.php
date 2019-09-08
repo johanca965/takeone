@@ -60,10 +60,24 @@ class InvitationController extends Controller
 
 	public function store()
 	{
+		// validamos que sea una peticion por post
+		$this->methodPost();
+		// buscamos si existe el "-" en la busqueda
+		$valide_guion = strpos($_POST['telephone'], "-");
+		// validamos que no exista
+		if( !$valide_guion && !empty($_POST['telephone']) )
+		{
+			// agregamos a las variables de error la respuesta del servidor
+			array_push($this->errors, "Please do not delete the '-' character from the phone number.");
+			// agregamos los errores obtenidos desde la peticion hecha al model
+			echo $this->errors();
+			return;
+		}
 		// validamos que existan los campos
 		$errors = $this->validate( $_POST, [
 			'name' => 'required',
-			'username' => 'required|unique:users',
+			'username' => 'unique:users',
+			'telephone' => 'unique:users',
 			'password' => 'required',
 			'photo' => 'required',
 			'country' => 'required',
@@ -86,10 +100,8 @@ class InvitationController extends Controller
 			// evitamos que siga la función
 			return;
 		}
-		// validamos que sea una peticion por post
-		$this->methodPost();
 		// realizamos la peticion al modelo de cerrar sesion
-		$login = $this->register( $_POST['name'], $_POST['username'], $_POST['password'], $_POST['photo'], $_POST['country'] );
+		$login = $this->register( $_POST['name'], $_POST['username'], $_POST['telephone'], $_POST['password'], $_POST['photo'], $_POST['country'] );
 		$login = explode("|", $login);
 		// validamos si se logueo o no
 		if( $login[0] != 'logueado' )
@@ -225,8 +237,35 @@ class InvitationController extends Controller
 	{
 		// validamos que sea una peticion por post
 		$this->methodPost();
+		// validamos que existan los campos
+		$errors = $this->validate( $_POST, [
+			'name' => 'required',
+			'username' => 'unique:users',
+			'telephone' => 'unique:users',
+			'password' => 'required',
+			'photo' => 'required',
+			'country' => 'required',
+			'city' => 'required'
+		] );
+
+		if( $errors )
+		{
+			echo $this->errors();
+			return;
+		}
+		// buscamos si existe el "-" en la busqueda
+		$valide_guion = strpos($_POST['telephone'], "-");
+		// validamos que no exista
+		if( !$valide_guion && !empty($_POST['telephone']) )
+		{
+			// agregamos a las variables de error la respuesta del servidor
+			array_push($this->errors, "Please do not delete the '-' character from the phone number.");
+			// agregamos los errores obtenidos desde la peticion hecha al model
+			echo $this->errors();
+			return;
+		}
 		// realizamos la peticion al modelo de cerrar sesion
-		$login = $this->register( $_POST['name'], $_POST['username'], $_POST['password'], $_POST['photo'], $_POST['country'] );
+		$login = $this->register( $_POST['name'], $_POST['username'], $_POST['telephone'], $_POST['password'], $_POST['photo'], $_POST['country'] );
 		$login = explode("|", $login);
 		// validamos si se logueo o no
 		if( $login[0] != 'logueado' )
@@ -298,7 +337,7 @@ class InvitationController extends Controller
 	}
 
 	// funcion para registrar un usuario en la base de datos
-	public function register( $name, $username, $password, $photo, $country_id )
+	public function register( $name, $username, $telephone, $password, $photo, $country_id )
 	{
 		// protegemos el valor inicial de las variables
 		$username_logueo = $username;
@@ -310,6 +349,7 @@ class InvitationController extends Controller
 			'name' => $name,
 			'slug' => SlugTrait::slug($name),
 			'username' => $username,
+			'telephone' => $telephone,
 			'password' => $password,
 			'email_verified_at' => date('Y-m-d H:i:s'),
 			'role_id' => "1",

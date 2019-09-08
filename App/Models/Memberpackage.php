@@ -59,4 +59,10 @@ class Memberpackage extends Model
 		return parent::simple(" SELECT t1.id FROM ". $this->table ." t1 INNER JOIN club_packages t2 ON t2.id = t1.package_id WHERE t1.member_id = '". $member_id ."' and package_id = '".$package_id."' ");
 	}
 
+	public function deleteByMemberID( $member_id )
+	{
+		// ejecutamos la consulta
+		return parent::simple( ' DELETE FROM  ' . $this->table . ' WHERE member_id = "'.$member_id.'" ' );
+	}
+
 }

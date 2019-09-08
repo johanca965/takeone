@@ -44,11 +44,14 @@ class AuthController extends Controller
 		}
 		else
 		{
+		echo "hola"; exit();
 			// asignamos los valores del usuario a sesionarse
 			$user['id'] = $_SESSION['id'];
 			$user['_token'] = $_SESSION['_token'];
 			$user['name'] = $_SESSION['name'];
 			$user['photo'] = $_SESSION['photo'];
+			$user['email'] = $_SESSION['username'];
+			$user['telephone'] = $_SESSION['telephone'];
 
 			// buscamos los clubs a los que pertenece el miembro
 			$clubs_member = $this->memberModel->findByUserID( $user['id'] );
@@ -87,11 +90,61 @@ class AuthController extends Controller
 			$response = [
 				'user' => $user,
 				'clubs' => $clubs,
-				 'msg' => "successful"
+				'msg' => "successful"
 			];
 			// retornamos a la vista de acceso cuando se satisfatorio el logueo
 			echo json_encode( $response );
 		}
+	}
+
+
+	// funcion para registrar un usuario
+	public function register()
+	{
+		
+		// validamos si no ingreso ningún valor para iniciar sesión
+		if( empty( $_POST['username'] ) && empty( $_POST['telephone'] ) )
+		{
+			// agregamos los errores obtenidos desde la peticion hecha al model
+			echo json_encode( [ 'msg' => "Please enter an email or telephone." ] );
+			return;
+		}
+		// conjunto de validaciones a realizar
+		$validations = [
+			'name' => 'required',
+			'username' => 'unique:users',
+			'telephone' => 'unique:users',
+			'password' => 'required',
+			'country' => 'required'
+		];
+		// validamos que existan los campos
+		$errors = $this->validate( $_POST, $validations );
+		// validamos si hay un error
+		if( $errors )
+		{
+			// agregamos los errores obtenidos desde la peticion hecha al model
+			echo json_encode( [ 'msg' => $this->errors() ] );
+			return;
+		}
+		// realizamos la peticion al modelo de cerrar sesion
+		$login = $this->Auth()->register( $_POST['name'], $_POST['username'], $_POST['telephone'], $_POST['password'], 'avatar.png', $_POST['country'] );
+		$login = explode("|", $login);
+		// validamos si se logueo o no
+		if( $login[0] != 'logueado' )
+		{
+			echo json_encode( [ 'msg' => $login[0] ] );
+			return;
+		}
+		else
+		{
+			// validamos que exista el telefono
+			if( empty( $_POST['telephone'] ) or !isset( $_POST['telephone'] ) )
+				// enviamos correo de verificacion
+				$this->sendMailVerify();
+			// retornamos a la vista de acceso cuando se satisfatorio el logueo
+			echo json_encode( [ 'msg' => "successful" ] );
+		}
+		
 	}
 
 

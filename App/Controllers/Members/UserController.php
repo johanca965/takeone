@@ -40,6 +40,7 @@ class UserController extends Controller
 			'user' => $this->userModel->findUser(),
 			'userdata' => $userdata,
 		];
+
 		$this->view('Members/User/profile', $params );
 	}
 
@@ -115,7 +116,7 @@ class UserController extends Controller
 			'slug' =>  SlugTrait::slug( $_POST['name'] ),
 			'username' => $_POST['username'],
 			'email_verified_at' => date('Y-m-d H:i:s'),
-			'photo' => SlugTrait::slug( $_POST['username'] ).'/'.$_POST['photo'],
+			'photo' => SlugTrait::slug( $_POST['name'] ).'/'.$_POST['photo'],
 			'role_id' => '1',
 			'type_account' => 'kid',
 			'parent_account' => $this->Auth()->user()->id(),
@@ -125,8 +126,8 @@ class UserController extends Controller
 
 		// validamos si la foto viene vacía
 		if( empty( $_POST['photo'] ) )
-			// la sacamos de la listaa para evitar actualizarla
-			unset( $request['photo'] );
+			// le cambiamos el nombre de la foto
+			$request['photo'] = "avatar.png";
 		// realizamos la petición
 		$result = $this->userModel->store( $request );
 		// validamos si existe error
@@ -192,13 +193,25 @@ class UserController extends Controller
 	{
 		// validar método post
 		$this->methodPost();
+		// buscamos si existe el "-" en la busqueda
+		$valide_guion = strpos($_POST['telephone'], "-");
+		// validamos que no exista
+		if( !$valide_guion && !empty($_POST['telephone']) )
+		{
+			// agregamos a las variables de error la respuesta del servidor
+			array_push($this->errors, "Please do not delete the '-' character from the phone number.");
+			// agregamos los errores obtenidos desde la peticion hecha al model
+			echo $this->errors();
+			return;
+		}
 		// validación de campos
 		$errors = $this->validate( $_POST, [
 			'id' => 'required|number',
 			'country_id' => 'required|number',
 			'city' => 'required',
 			'name' => 'required',
-			'username' => 'required|unique:users:'.$_POST['id']
+			'username' => 'unique:users:'.$_POST['id'],
+			'telephone' => 'unique:users:'.$_POST['id']
 		]);
 		// validamos si existe un error
 		if( $errors )
@@ -213,6 +226,8 @@ class UserController extends Controller
 			'id' => $_POST['id'],
 			'name' => $_POST['name'],
 			'slug' =>  SlugTrait::slug( $_POST['name'] ),
+			'username' => $_POST['username'],
+			'telephone' => $_POST['telephone'],
 			'password' => password_hash( $_POST['password'], PASSWORD_BCRYPT),
 			'photo' => SlugTrait::slug( $_POST['username'] ).'/'.$_POST['photo'],
 			'updated_at' => date('Y-m-d H:i:s')

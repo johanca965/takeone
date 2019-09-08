@@ -4,7 +4,7 @@
 // Documentación disponible en https://framework.hyperlinkse.com
 
 // desactivamos todos los warning, notice y errores de php
-#error_reporting(0);
+error_reporting(0);
 
 ////////////////////////////
 // rutas de la aplicacion //

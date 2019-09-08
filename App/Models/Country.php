@@ -12,7 +12,7 @@ class Country extends Model
 		$this->table = "countries";
 		// llenamos la variable que contiene los datos que se pueden registrar en masa 
 		$this->fillable = [ 
-			"name", "phonecode", "currency", "gmt_time"
+			"name", "iso", "phonecode", "currency", "gmt_time"
 		];
 		// variable que contiene los campos que no queremos dejar ver
 		$this->hidden = [ "" ];
@@ -23,6 +23,13 @@ class Country extends Model
 	{
 		// ejecutamos la consulta
 		return parent::find( $id );
+	}
+
+	// función para almacenar un registro
+	public function all( $input = 'iso', $order = 'asc' )
+	{
+		// ejecutamos la consulta
+		return parent::all( $input, $order );
 	}
 
 	public function listSimple()

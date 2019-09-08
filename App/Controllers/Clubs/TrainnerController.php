@@ -45,7 +45,7 @@ class TrainnerController extends Controller
 		$errors = $this->validate( $_POST, [
 			'user_id' => 'required|number',
 			'activity' => 'required',
-			'salary' => 'required'
+			'salary' => 'number'
 		]);
 		// validamos si existe un error
 		if( $errors )

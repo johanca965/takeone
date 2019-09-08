@@ -209,5 +209,35 @@ $(document).ready(function() {
 		return false;
 	});
 
+	$("#form-edit-2").submit(function(){
+		$("#errors-edit-2").html('');
+		var form = $("#form-edit-2");
+		var url = form.attr('action');
+		$.ajax({
+			url: url,
+			type: 'POST',
+			data: form.serialize(),
+			beforeSend: function() {
+				toastr.info("Updating record...");
+			},
+			success: function(data) {
+				if( data === 'true' )
+				{
+					toastr.success("Successfully updated registration.");
+					location.reload();
+				}else
+				{
+					toastr.error("An error has occurred.");
+					$("#errors-edit-2").append( data );
+				}
+			},
+			error: function(xhr) {
+			   	toastr.error("An error has occurred.");
+			    // console.log(xhr.statusText + xhr.responseText);
+			},
+		});
+		return false;
+	});
+
 
 });
