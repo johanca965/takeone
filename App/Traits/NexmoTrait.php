@@ -27,7 +27,7 @@ class NexmoTrait
 		try {
 			$message = $client->message()->send([
 				'to' => $number,
-				'from' => 'Acme Inc',
+				'from' => 'Test',
 				'text' => 'The code to register on TAKEONE is: '.$code
 			]);
 			$response = $message->getResponseData();
